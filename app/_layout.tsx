@@ -17,7 +17,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import useLoadInitialQuestionData from "@/hooks/useLoadInitialQuestionData";
 import useToS from "@/hooks/useToS";
 import { useEffect } from "react";
-import { StyleSheet, Text } from "react-native";
+import { Platform, StyleSheet, Text } from "react-native";
 
 const Content = () => {
   useLoadInitialQuestionData();
@@ -52,6 +52,10 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    if (Platform.OS === "web") {
+      document.title = "Australian Pilot Quiz";
+    }
+
     SplashScreen.hideAsync();
   }, []);
 
