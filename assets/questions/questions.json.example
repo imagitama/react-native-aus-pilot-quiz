@@ -1,0 +1,28 @@
+{
+  "levels": [
+    {
+      "name": "RPL",
+      "areas": [
+        {
+          "name": "Lift",
+          "questions": [
+            {
+              "question": "What is air?",
+              "answers": [
+                {
+                  "answer": "It is a gas"
+                },
+                {
+                  "answer": "It is a liquid"
+                },
+                {
+                  "answer": "It is a solid"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
