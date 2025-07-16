@@ -1,7 +1,5 @@
 const path = require("path");
 
-console.log("BABEL CONFIG");
-
 module.exports = function (api) {
   api.cache(true);
   return {

@@ -1,4 +1,4 @@
-import { ensureDefaultJsonExists } from "@/docs";
+import { JSON_FILE_NAME, ensureDefaultJsonExists } from "@/docs";
 import { storeQuestionDataAction } from "@/features/quiz/quizSlice";
 import { QuestionData } from "@/types";
 import { useEffect } from "react";
@@ -20,7 +20,7 @@ const useLoadInitialQuestionData = () => {
         let newData;
 
         if (Platform.OS === "web") {
-          newData = require("@/assets/questions/empty-questions.json");
+          newData = require("@/assets/questions/" + JSON_FILE_NAME);
         } else {
           newData = await ensureDefaultJsonExists<QuestionData>();
         }

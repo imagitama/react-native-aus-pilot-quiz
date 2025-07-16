@@ -20,14 +20,16 @@ export async function pickJsonFile<T>(): Promise<T | null> {
   return JSON.parse(content);
 }
 
-const DEFAULT_JSON_PATH = FileSystem.documentDirectory + "questions.json";
+export const JSON_FILE_NAME = "empty-questions.json";
+const DEFAULT_JSON_PATH = FileSystem.documentDirectory + JSON_FILE_NAME;
 
 export async function ensureDefaultJsonExists<T>(): Promise<T> {
   const fileInfo = await FileSystem.getInfoAsync(DEFAULT_JSON_PATH);
 
   if (!fileInfo.exists) {
     await FileSystem.copyAsync({
-      from: Asset.fromModule(require("./assets/questions/questions.json")).uri,
+      from: Asset.fromModule(require("./assets/questions/" + JSON_FILE_NAME))
+        .uri,
       to: DEFAULT_JSON_PATH,
     });
   }

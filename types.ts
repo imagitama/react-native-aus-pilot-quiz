@@ -12,6 +12,8 @@ export interface QuestionData {
   levels: Level[];
 }
 
+export type QuestionsJson = QuestionData;
+
 export interface Level {
   abbr?: string;
   name: string;
