@@ -20,7 +20,7 @@ const useLoadInitialQuestionData = () => {
         let newData;
 
         if (Platform.OS === "web") {
-          newData = require("@/assets/questions/questions.json");
+          newData = require("@/assets/questions/empty-questions.json");
         } else {
           newData = await ensureDefaultJsonExists<QuestionData>();
         }
