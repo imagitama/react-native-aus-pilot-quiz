@@ -5,6 +5,7 @@ import Button from "@/components/Button";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import UploadQuestionDataForm from "@/components/UploadQuestionDataForm";
+import { downloadFile } from "@/downloading";
 import { clearAction } from "@/features/quiz/quizSlice";
 import { useDispatch } from "react-redux";
 
@@ -12,6 +13,8 @@ export default function MainMenu() {
   const router = useRouter();
   const dispatch = useDispatch();
   const clear = () => dispatch(clearAction());
+  const downloadExampleQuestions = () =>
+    downloadFile("/questions/questions-example.json");
 
   return (
     <>
@@ -27,6 +30,12 @@ export default function MainMenu() {
         <View style={{ height: 100 }} />
         <ThemedText type="subtitle">Upload custom questions</ThemedText>
         <UploadQuestionDataForm />
+        <View style={{ height: 25 }} />
+        <Button
+          onPress={downloadExampleQuestions}
+          title="Download Example Questions"
+          type="ghost"
+        />
         <View style={{ height: 100 }} />
         <ThemedText type="subtitle">Advanced</ThemedText>
         <View style={{ height: 25 }} />
