@@ -32,6 +32,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/state";
 import useArea from "@/hooks/useArea";
 import useCurrentQuestion from "@/hooks/useCurrentQuestion";
 import useLevel from "@/hooks/useLevel";
+import useLoadInitialQuestionData from "@/hooks/useLoadInitialQuestionData";
 import useQuestionData from "@/hooks/useQuestionData";
 import { AppState } from "@/types";
 import { tallyCorrectAnswers } from "@/utils";
@@ -42,9 +43,15 @@ const SelectLevelView = () => {
   const setSelectedLevelId = (id: string) =>
     dispatch(setSelectedLevelIdAction(id));
   const [questionData] = useQuestionData();
+  const loadInitialQuestionData = useLoadInitialQuestionData(false);
 
   if (!questionData) {
-    return <ThemedText>Loading question data...</ThemedText>;
+    return (
+      <ThemedText>
+        You must load some question data to get started{" "}
+        <Button title="Load default data" onPress={loadInitialQuestionData} />
+      </ThemedText>
+    );
   }
 
   return (
