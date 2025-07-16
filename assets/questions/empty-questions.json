@@ -8,9 +8,13 @@
           "questions": [
             {
               "question": "What is air?",
+              "hint": "It has a large percentage of something, another thing and a tiny bit of one other thing.",
               "answers": [
                 {
-                  "answer": "It is a gas"
+                  "answer": "It is a gas",
+                  "reference": {
+                    "url": "https://education.nationalgeographic.org/resource/air"
+                  }
                 },
                 {
                   "answer": "It is a liquid"

@@ -8,11 +8,27 @@ import useQuizOptions from "@/hooks/useQuizOptions";
 import { Question } from "@/types";
 import { getIdForAnswer, getIdForQuestion } from "@/utils";
 import { Image } from "expo-image";
+import { useState } from "react";
 import { View } from "react-native";
 import AnswerOption from "./AnswerOption";
+import Button from "./Button";
 import QuestionResult from "./QuestionResult";
 import ReferenceLikeOutput from "./ReferenceLikeOutput";
 import { ThemedText } from "./ThemedText";
+
+const HintButton = ({ hint }: { hint: string }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  if (isVisible) {
+    return (
+      <ThemedText style={{ fontStyle: "italic" }}>Hint: {hint}</ThemedText>
+    );
+  }
+
+  return (
+    <Button onPress={() => setIsVisible(true)} title="Show Hint" type="ghost" />
+  );
+};
 
 const QuestionInput = ({ question }: { question: Question }) => {
   const questionIdx = useAppSelector(selectCurrentQuestionIdx)!;
@@ -63,6 +79,17 @@ const QuestionInput = ({ question }: { question: Question }) => {
           />
         ))}
       </View>
+      {options.allowHints && question.hint ? (
+        <>
+          <View
+            style={{
+              borderBottomColor: "white",
+              borderBottomWidth: 25,
+            }}
+          />
+          <HintButton hint={question.hint} />
+        </>
+      ) : null}
       {options.immediatelyShowResult && hasAnswered ? (
         <>
           <View

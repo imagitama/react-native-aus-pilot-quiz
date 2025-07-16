@@ -28,6 +28,7 @@ export interface Area {
 
 export interface Question {
   question: string; // also used as unique ID
+  hint?: string;
   imageName?: string | null;
   answers: Answer[];
   source?: ReferenceLike;

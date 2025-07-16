@@ -14,7 +14,8 @@ const useQuestion = (id: string): Question | null => {
   );
 
   if (!question) {
-    throw new Error(`Could not find question with ID ${id}`);
+    console.warn(`Could not find question with ID ${id}`);
+    return null;
   }
 
   return question;

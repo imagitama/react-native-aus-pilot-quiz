@@ -14,7 +14,8 @@ const useArea = (): Area | null => {
   const area = level.areas.find((area) => area.name === currentAreaId);
 
   if (!area) {
-    throw new Error(`Could not find area with ID ${currentAreaId}`);
+    console.warn(`Could not find area with ID ${currentAreaId}`);
+    return null;
   }
 
   return area;

@@ -16,7 +16,8 @@ const useLevel = (): Level | null => {
   );
 
   if (!level) {
-    throw new Error(`Could not find level with ID ${selectedLevelId}`);
+    console.warn(`Could not find level with ID ${selectedLevelId}`);
+    return null;
   }
 
   return level;

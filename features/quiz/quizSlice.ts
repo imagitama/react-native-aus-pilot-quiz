@@ -12,6 +12,7 @@ export interface Options {
   randomizeAnswers: boolean;
   questionLimit: number;
   immediatelyShowResult: boolean;
+  allowHints: boolean;
 }
 
 const defaultOptions: Options = {
@@ -19,6 +20,7 @@ const defaultOptions: Options = {
   randomizeAnswers: true,
   questionLimit: 0,
   immediatelyShowResult: false,
+  allowHints: true,
 };
 
 export interface QuizState {

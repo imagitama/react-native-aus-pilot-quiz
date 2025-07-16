@@ -259,6 +259,17 @@ const ConfigureQuizView = () => {
           Immediately show answers
         </ThemedText>
       </View>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Checkbox
+          status={options.allowHints ? "checked" : "unchecked"}
+          onPress={() => updateOption("allowHints", !options.allowHints)}
+        />
+        <ThemedText
+          onPress={() => updateOption("allowHints", !options.allowHints)}
+        >
+          Allow hints
+        </ThemedText>
+      </View>
       <View
         style={{
           borderBottomColor: "white",
