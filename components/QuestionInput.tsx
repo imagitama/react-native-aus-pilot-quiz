@@ -105,7 +105,10 @@ const QuestionInput = ({ question }: { question: Question }) => {
               borderBottomWidth: 25,
             }}
           />
-          <QuestionResult questionId={getIdForQuestion(question)} />
+          <QuestionResult
+            questionId={getIdForQuestion(question)}
+            showQuestionText={false}
+          />
         </>
       ) : null}
       {question.source ? (

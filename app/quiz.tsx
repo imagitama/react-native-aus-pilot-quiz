@@ -266,6 +266,12 @@ const ConfigureQuizView = () => {
           Immediately show answers
         </ThemedText>
       </View>
+      <View
+        style={{
+          borderBottomColor: "white",
+          borderBottomWidth: 25,
+        }}
+      />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Checkbox
           status={options.allowHints ? "checked" : "unchecked"}
@@ -306,10 +312,12 @@ const ConfigureQuizView = () => {
             area.questions.length > 10 ? 10 : area.questions.length
           )
         }
+        type="ghost"
       />
       <Button
         title="Max"
         onPress={() => updateOption("questionLimit", area.questions.length)}
+        type="ghost"
       />
       <View
         style={{

@@ -97,13 +97,13 @@ const AnswerResult = ({
         </View>
       ) : null}
       {answer.rationale ? (
-        <ThemedText>
+        <ThemedText style={{ marginLeft: 10, fontStyle: "italic" }}>
           Rationale/Explanation:{" "}
           <ReferenceLikeOutput referenceLike={answer.rationale} />
         </ThemedText>
       ) : null}
       {answer.reference ? (
-        <ThemedText>
+        <ThemedText style={{ marginLeft: 10, fontStyle: "italic" }}>
           Reference: <ReferenceLikeOutput referenceLike={answer.reference} />
         </ThemedText>
       ) : null}

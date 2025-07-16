@@ -9,7 +9,13 @@ import { View } from "react-native";
 import AnswerResult from "./AnswerResult";
 import { ThemedText } from "./ThemedText";
 
-const QuestionResult = ({ questionId }: { questionId: string }) => {
+const QuestionResult = ({
+  questionId,
+  showQuestionText = true,
+}: {
+  questionId: string;
+  showQuestionText?: boolean;
+}) => {
   const question = useQuestion(questionId);
   const answersByQuestionIdx = useAppSelector(selectAnswersByQuestionIdx);
   const questionIds = useAppSelector(selectQuestionIds);
@@ -42,13 +48,13 @@ const QuestionResult = ({ questionId }: { questionId: string }) => {
     ? explicitCorrectAnswer
     : question.answers[0];
 
-  console.debug(`QuestionResult`, { answers, correctAnswer });
-
   return (
     <>
-      <ThemedText style={{ fontWeight: "bold" }}>
-        {questionIdx + 1}: {question.question}
-      </ThemedText>
+      {showQuestionText ? (
+        <ThemedText style={{ fontWeight: "bold" }}>
+          {questionIdx + 1}: {question.question}
+        </ThemedText>
+      ) : null}
       <View
         style={{
           borderBottomColor: "white",
