@@ -28,7 +28,7 @@ export async function ensureDefaultJsonExists<T>(): Promise<T> {
 
   if (!fileInfo.exists) {
     await FileSystem.copyAsync({
-      from: Asset.fromModule(require("./assets/questions/" + JSON_FILE_NAME))
+      from: Asset.fromModule(require("./assets/questions/empty-questions.json"))
         .uri,
       to: DEFAULT_JSON_PATH,
     });

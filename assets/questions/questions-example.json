@@ -1,0 +1,55 @@
+{
+  "levels": [
+    {
+      "name": "RPL",
+      "areas": [
+        {
+          "name": "Lift",
+          "questions": [
+            {
+              "question": "What is air?",
+              "answers": [
+                {
+                  "answer": "It is a gas"
+                },
+                {
+                  "answer": "It is a liquid"
+                },
+                {
+                  "answer": "It is a solid"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Engines",
+          "questions": [
+            {
+              "question": "What does BTDC mean?",
+              "answers": [
+                {
+                  "answer": "Before The Deepest Centre"
+                },
+                {
+                  "answer": "Before Top Dead Centre",
+                  "correct": true,
+                  "rationale": "The 'dead centre' is the closest or furthest position of the piston to the crank shaft.",
+                  "reference": {
+                    "url": "https://en.wikipedia.org/wiki/Ignition_timing"
+                  }
+                },
+                {
+                  "answer": "Back Through Delta Control"
+                },
+                {
+                  "answer": "Below The Depth Control"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
