@@ -15,6 +15,7 @@ export default function MainMenu() {
   const clear = () => dispatch(clearAction());
   const downloadExampleQuestions = () =>
     downloadFile("/questions/questions-example.json");
+  const downloadReadme = () => downloadFile("/questions/README.md");
 
   return (
     <>
@@ -36,6 +37,7 @@ export default function MainMenu() {
           title="Download Example Questions"
           type="ghost"
         />
+        <Button onPress={downloadReadme} title="Download README" type="ghost" />
         <View style={{ height: 100 }} />
         <ThemedText type="subtitle">Advanced</ThemedText>
         <View style={{ height: 25 }} />
