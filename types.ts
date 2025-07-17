@@ -47,3 +47,7 @@ export type ReferenceLike = string | UrlDescriptor | UrlDescriptor[];
 export interface UrlDescriptor {
   url: string;
 }
+
+export interface FinalAnswer {
+  answerId: string;
+}

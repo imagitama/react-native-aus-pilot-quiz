@@ -1,6 +1,6 @@
 import {
-  selectSelectedAnswerIndexes,
-  toggleAnswerIdxAction,
+  selectFinalAnswersByQuestionIdx,
+  toggleFinalAnswerIdAction,
 } from "@/features/quiz/quizSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
 import { Answer } from "@/types";
@@ -18,14 +18,16 @@ const AnswerOption = ({
   idx: number;
 }) => {
   const dispatch = useAppDispatch();
-  const toggleAnswer = () => dispatch(toggleAnswerIdxAction(idx));
-  const selectedAnswerIndexes = useAppSelector(selectSelectedAnswerIndexes);
+  const toggleAnswer = () =>
+    dispatch(toggleFinalAnswerIdAction(answer.internalId));
+  const selectedAnswerIndexes = useAppSelector(selectFinalAnswersByQuestionIdx);
 
   if (selectedAnswerIndexes === null) {
     throw new Error("Cannot render answer without some indexes");
   }
 
-  const isSelected = selectedAnswerIndexes[questionIdx] === idx;
+  const isSelected =
+    selectedAnswerIndexes[questionIdx]?.answerId === answer.internalId;
 
   return (
     <>

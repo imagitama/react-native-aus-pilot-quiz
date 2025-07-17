@@ -1,6 +1,6 @@
 import {
-  selectAnswersByQuestionIdx,
-  selectSelectedAnswerIndexes,
+  selectAnswerIdsByQuestionIdx,
+  selectFinalAnswersByQuestionIdx,
 } from "@/features/quiz/quizSlice";
 import { useAppSelector } from "@/hooks/state";
 import { Answer } from "@/types";
@@ -18,10 +18,12 @@ const AnswerResult = ({
   questionIdx: number;
   correctAnswer: Answer;
 }) => {
-  const selectedAnswerIndexes = useAppSelector(selectSelectedAnswerIndexes);
-  const answersByQuestionIdx = useAppSelector(selectAnswersByQuestionIdx);
+  const finalAnswersByQuestionIdx = useAppSelector(
+    selectFinalAnswersByQuestionIdx
+  );
+  const answersByQuestionIdx = useAppSelector(selectAnswerIdsByQuestionIdx);
 
-  if (selectedAnswerIndexes === null) {
+  if (finalAnswersByQuestionIdx === null) {
     throw new Error("Cannot render answer without some indexes");
   }
   if (answersByQuestionIdx === null) {
@@ -37,12 +39,15 @@ const AnswerResult = ({
   const answerIdx = answerIdsForQuestion.findIndex(
     (answerId) => answerId === answer.internalId
   )!;
-  const wasSelected = selectedAnswerIndexes[questionIdx] === answerIdx;
+  const wasSelected =
+    finalAnswersByQuestionIdx[questionIdx]?.answerId === answer.internalId;
 
   if (wasSelected) {
     console.debug("AnswerResult.wasSelected", {
       answer,
-      selectedAnswerIndexes,
+      answerIdsForQuestion,
+      finalAnswersByQuestionIdx,
+      answerIdx,
       questionIdx,
     });
   }

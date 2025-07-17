@@ -1,4 +1,4 @@
-import { AppState, Area, Mode, QuestionData } from "@/types";
+import { AppState, Area, FinalAnswer, Mode, QuestionData } from "@/types";
 import {
   getIdForQuestion,
   purgeDuplicateQuestionData,
@@ -33,9 +33,8 @@ export interface QuizState {
   selectedAreaId: string | null;
   questionIds: string[] | null;
   currentQuestionIdx: number | null;
-  answersByQuestionIdx: null | string[][];
-  selectedAnswerIndexes: null | (number | null)[]; // depends on random answers
-  // answerIdsPerQuestionId
+  answerIdsByQuestionIdx: string[][] | null;
+  finalAnswersByQuestionIdx: (FinalAnswer | null)[] | null; // depends on random answers
   options: Options;
 }
 
@@ -49,8 +48,8 @@ const initialState: QuizState = {
   selectedAreaId: null,
   questionIds: null,
   currentQuestionIdx: null,
-  answersByQuestionIdx: null,
-  selectedAnswerIndexes: null,
+  answerIdsByQuestionIdx: null,
+  finalAnswersByQuestionIdx: null,
   options: defaultOptions,
 };
 
@@ -86,14 +85,14 @@ const startQuiz = (state: QuizState) => {
     getIdForQuestion(question)
   );
 
-  state.answersByQuestionIdx = questionsToAsk.map((question) =>
+  state.answerIdsByQuestionIdx = questionsToAsk.map((question) =>
     (state.options.randomizeAnswers
       ? shuffleArray(question.answers)
       : [...question.answers]
     ).map((answer) => answer.internalId)
   );
 
-  state.selectedAnswerIndexes = state.questionIds.map((id) => null);
+  state.finalAnswersByQuestionIdx = state.questionIds.map((id) => null);
   state.currentQuestionIdx = 0;
 
   state.currentAppState = AppState.Progress;
@@ -151,14 +150,14 @@ export const quizSlice = createSlice({
         throw new Error("Cannot go to next question without a current idx");
       }
 
-      if (!state.selectedAnswerIndexes) {
+      if (!state.finalAnswersByQuestionIdx) {
         throw new Error("Cannot go to next question with empty answers");
       }
 
       const nextIdx = currentIdx + 1;
 
       console.debug("nextQuestion", {
-        indexes: state.selectedAnswerIndexes,
+        indexes: state.finalAnswersByQuestionIdx,
         nextIdx,
       });
 
@@ -168,7 +167,7 @@ export const quizSlice = createSlice({
         );
 
         if (
-          state.selectedAnswerIndexes.find(
+          state.finalAnswersByQuestionIdx.find(
             (selectedAnswer) => selectedAnswer === null
           ) !== undefined
         ) {
@@ -204,30 +203,32 @@ export const quizSlice = createSlice({
 
       state.currentQuestionIdx = prevIdx;
     },
-    toggleAnswerIdx: (state, action: PayloadAction<number>) => {
-      const answerIdxToToggle = action.payload;
+    toggleFinalAnswerId: (state, action: PayloadAction<string>) => {
+      const answerIdToToggle = action.payload;
 
       const currentQuestionIdx = state.currentQuestionIdx;
 
       if (currentQuestionIdx === null) {
         throw new Error("Cannot toggle answer without current question idx");
       }
-      if (!state.selectedAnswerIndexes) {
+      if (!state.finalAnswersByQuestionIdx) {
         throw new Error("Cannot toggle answer with indexes being empty");
       }
 
-      console.debug(`toggleAnswerIdx`, {
+      console.debug(`toggleFinalAnswerId`, {
         questionIdx: currentQuestionIdx,
-        answerIdx: answerIdxToToggle,
+        answerId: answerIdToToggle,
       });
 
-      state.selectedAnswerIndexes = state.selectedAnswerIndexes.map(
-        (answerIdx, questionIdx) =>
+      state.finalAnswersByQuestionIdx = state.finalAnswersByQuestionIdx.map(
+        (finalAnswer, questionIdx) =>
           questionIdx === currentQuestionIdx
-            ? answerIdx === answerIdxToToggle
+            ? finalAnswer && finalAnswer.answerId === answerIdToToggle
               ? null
-              : answerIdxToToggle
-            : answerIdx
+              : {
+                  answerId: answerIdToToggle,
+                }
+            : finalAnswer
       );
     },
     startQuiz: (state, action: PayloadAction<Area>) => {
@@ -246,8 +247,8 @@ export const quizSlice = createSlice({
       state.selectedAreaId = null;
       state.questionIds = null;
       state.currentQuestionIdx = null;
-      state.answersByQuestionIdx = null;
-      state.selectedAnswerIndexes = null;
+      state.answerIdsByQuestionIdx = null;
+      state.finalAnswersByQuestionIdx = null;
 
       state.currentAppState = AppState.MainMenu;
     },
@@ -272,7 +273,7 @@ export const {
   storeQuestionData: storeQuestionDataAction,
   setSelectedLevelId: setSelectedLevelIdAction,
   setSelectedAreaId: setSelectedAreaIdAction,
-  toggleAnswerIdx: toggleAnswerIdxAction,
+  toggleFinalAnswerId: toggleFinalAnswerIdAction,
   nextQuestion: nextQuestionAction,
   prevQuestion: prevQuestionAction,
   startQuiz: startQuizAction,
@@ -295,11 +296,11 @@ export const selectSelectedAreaId = (state: RootState) =>
   state.quiz.selectedAreaId;
 export const selectCurrentQuestionIdx = (state: RootState) =>
   state.quiz.currentQuestionIdx;
-export const selectSelectedAnswerIndexes = (state: RootState) =>
-  state.quiz.selectedAnswerIndexes;
+export const selectFinalAnswersByQuestionIdx = (state: RootState) =>
+  state.quiz.finalAnswersByQuestionIdx;
 export const selectQuestionIds = (state: RootState) => state.quiz.questionIds;
-export const selectAnswersByQuestionIdx = (state: RootState) =>
-  state.quiz.answersByQuestionIdx;
+export const selectAnswerIdsByQuestionIdx = (state: RootState) =>
+  state.quiz.answerIdsByQuestionIdx;
 export const selectOptions = (state: RootState) => state.quiz.options;
 export const selectHasAgreedToToS = (state: RootState) =>
   state.quiz.hasAgreedToToS;

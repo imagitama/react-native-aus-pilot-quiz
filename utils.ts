@@ -48,8 +48,8 @@ export function tallyCorrectAnswers(
 ): number {
   if (
     !state.questionIds ||
-    !state.answersByQuestionIdx ||
-    !state.selectedAnswerIndexes
+    !state.answerIdsByQuestionIdx ||
+    !state.finalAnswersByQuestionIdx
   ) {
     return 0;
   }
@@ -58,16 +58,16 @@ export function tallyCorrectAnswers(
 
   for (let i = 0; i < state.questionIds.length; i++) {
     const questionId = state.questionIds[i];
-    const selectedIdx = state.selectedAnswerIndexes[i];
-    const shuffledAnswers = state.answersByQuestionIdx[i];
+    const finalAnswer = state.finalAnswersByQuestionIdx[i];
+    const shuffledAnswerIds = state.answerIdsByQuestionIdx[i];
 
     const question = allQuestions.find(
       (q) => getIdForQuestion(q) === questionId
     );
 
     if (
-      selectedIdx == null ||
-      !shuffledAnswers ||
+      finalAnswer == null ||
+      !shuffledAnswerIds ||
       !question ||
       !question.answers.length
     ) {
@@ -80,9 +80,11 @@ export function tallyCorrectAnswers(
     const correctAnswerText = explicitCorrectAnswer
       ? explicitCorrectAnswer.answer
       : question.answers[0].answer;
-    const selectedAnswerText = shuffledAnswers[selectedIdx];
+    const finalAnswerText = shuffledAnswerIds.find(
+      (id) => id === finalAnswer.answerId
+    );
 
-    if (selectedAnswerText === correctAnswerText) {
+    if (finalAnswerText === correctAnswerText) {
       tally++;
     }
   }

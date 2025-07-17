@@ -1,5 +1,5 @@
 import {
-  selectAnswersByQuestionIdx,
+  selectAnswerIdsByQuestionIdx,
   selectQuestionIds,
 } from "@/features/quiz/quizSlice";
 import { useAppSelector } from "@/hooks/state";
@@ -17,7 +17,7 @@ const QuestionResult = ({
   showQuestionText?: boolean;
 }) => {
   const question = useQuestion(questionId);
-  const answersByQuestionIdx = useAppSelector(selectAnswersByQuestionIdx);
+  const answersByQuestionIdx = useAppSelector(selectAnswerIdsByQuestionIdx);
   const questionIds = useAppSelector(selectQuestionIds);
 
   if (!question) {

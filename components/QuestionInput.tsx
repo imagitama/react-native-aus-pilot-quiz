@@ -1,7 +1,7 @@
 import {
-  selectAnswersByQuestionIdx,
+  selectAnswerIdsByQuestionIdx,
   selectCurrentQuestionIdx,
-  selectSelectedAnswerIndexes,
+  selectFinalAnswersByQuestionIdx,
 } from "@/features/quiz/quizSlice";
 import { useAppSelector } from "@/hooks/state";
 import useQuizOptions from "@/hooks/useQuizOptions";
@@ -32,8 +32,10 @@ const HintButton = ({ hint }: { hint: string }) => {
 
 const QuestionInput = ({ question }: { question: Question }) => {
   const questionIdx = useAppSelector(selectCurrentQuestionIdx)!;
-  const answersByQuestionIdx = useAppSelector(selectAnswersByQuestionIdx)!;
-  const selectedAnswerIndexes = useAppSelector(selectSelectedAnswerIndexes)!;
+  const answersByQuestionIdx = useAppSelector(selectAnswerIdsByQuestionIdx)!;
+  const selectedAnswerIndexes = useAppSelector(
+    selectFinalAnswersByQuestionIdx
+  )!;
 
   const options = useQuizOptions();
 

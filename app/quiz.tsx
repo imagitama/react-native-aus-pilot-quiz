@@ -15,12 +15,12 @@ import {
   prevQuestionAction,
   quitQuizAction,
   restartQuizAction,
-  selectAnswersByQuestionIdx,
+  selectAnswerIdsByQuestionIdx,
   selectAppState,
   selectCurrentQuestionIdx,
+  selectFinalAnswersByQuestionIdx,
   selectOptions,
   selectQuestionIds,
-  selectSelectedAnswerIndexes,
   selectSelectedAreaId,
   selectSelectedLevelId,
   setOptionsAction,
@@ -345,8 +345,8 @@ const QuizInProgressView = () => {
   const startQuiz = () => dispatch(startQuizAction(area!));
   const question = useCurrentQuestion();
   const questionIds = useAppSelector(selectQuestionIds);
-  const answersByQuestionIdx = useAppSelector(selectAnswersByQuestionIdx);
-  const selectedAnswerIndexes = useAppSelector(selectSelectedAnswerIndexes);
+  const answersByQuestionIdx = useAppSelector(selectAnswerIdsByQuestionIdx);
+  const selectedAnswerIndexes = useAppSelector(selectFinalAnswersByQuestionIdx);
   const currentQuestionIdx = useAppSelector(selectCurrentQuestionIdx);
 
   useEffect(() => {
