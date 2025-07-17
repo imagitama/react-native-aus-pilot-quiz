@@ -4,6 +4,7 @@ import {
 } from "@/features/quiz/quizSlice";
 import { useAppSelector } from "@/hooks/state";
 import useQuestion from "@/hooks/useQuestion";
+import { Answer } from "@/types";
 import { getIdForQuestion } from "@/utils";
 import { View } from "react-native";
 import AnswerResult from "./AnswerResult";
@@ -17,7 +18,7 @@ const QuestionResult = ({
   showQuestionText?: boolean;
 }) => {
   const question = useQuestion(questionId);
-  const answersByQuestionIdx = useAppSelector(selectAnswerIdsByQuestionIdx);
+  const answerIdsByQuestionIdx = useAppSelector(selectAnswerIdsByQuestionIdx);
   const questionIds = useAppSelector(selectQuestionIds);
 
   if (!question) {
@@ -26,7 +27,7 @@ const QuestionResult = ({
   if (!questionIds) {
     return <ThemedText>No question IDs</ThemedText>;
   }
-  if (!answersByQuestionIdx) {
+  if (!answerIdsByQuestionIdx) {
     return <ThemedText>No random answers</ThemedText>;
   }
 
@@ -34,11 +35,13 @@ const QuestionResult = ({
     (id) => id === getIdForQuestion(question)
   );
 
-  const answerIds = answersByQuestionIdx[questionIdx];
-
-  const answers = [...question.answers];
-  answers.sort((a, b) => {
-    return answerIds.indexOf(a.answer) - answerIds.indexOf(b.answer);
+  const randomAnswerIds = answerIdsByQuestionIdx[questionIdx];
+  const randomAnswers: Answer[] = [...question.answers];
+  randomAnswers.sort((a, b) => {
+    return (
+      randomAnswerIds.indexOf(a.internalId) -
+      randomAnswerIds.indexOf(b.internalId)
+    );
   });
 
   const explicitCorrectAnswer = question.answers.find(
@@ -67,7 +70,7 @@ const QuestionResult = ({
           justifyContent: "flex-start",
         }}
       >
-        {answers.map((answer) => (
+        {randomAnswers.map((answer) => (
           <AnswerResult
             key={answer.internalId}
             answer={answer}

@@ -78,9 +78,6 @@ const startQuiz = (state: QuizState) => {
 
   questionsToAsk = questionsToAsk.slice(0, limit);
 
-  console.debug(`starting quiz for area "${selectedArea.name}" with questions:
-  ${questionsToAsk.map((question) => question.question).join("\n")}`);
-
   state.questionIds = questionsToAsk.map((question) =>
     getIdForQuestion(question)
   );
@@ -91,6 +88,11 @@ const startQuiz = (state: QuizState) => {
       : [...question.answers]
     ).map((answer) => answer.internalId)
   );
+
+  console.debug(`starting quiz for area "${selectedArea.name}" with questions:
+\t${questionsToAsk.map((question) => question.question).join("\n\t")}
+answers by idx:
+\t${state.answerIdsByQuestionIdx.map((answerIds, questionIdx) => `${questionIdx}: ${answerIds.join(",")}`).join("\n\n\t")}`);
 
   state.finalAnswersByQuestionIdx = state.questionIds.map((id) => null);
   state.currentQuestionIdx = 0;

@@ -5,7 +5,7 @@ import {
 } from "@/features/quiz/quizSlice";
 import { useAppSelector } from "@/hooks/state";
 import useQuizOptions from "@/hooks/useQuizOptions";
-import { Question } from "@/types";
+import { Answer, Question } from "@/types";
 import { getIdForAnswer, getIdForQuestion } from "@/utils";
 import { Image } from "expo-image";
 import { useState } from "react";
@@ -32,18 +32,20 @@ const HintButton = ({ hint }: { hint: string }) => {
 
 const QuestionInput = ({ question }: { question: Question }) => {
   const questionIdx = useAppSelector(selectCurrentQuestionIdx)!;
-  const answersByQuestionIdx = useAppSelector(selectAnswerIdsByQuestionIdx)!;
+  const answerIdsByQuestionIdx = useAppSelector(selectAnswerIdsByQuestionIdx)!;
   const selectedAnswerIndexes = useAppSelector(
     selectFinalAnswersByQuestionIdx
   )!;
 
   const options = useQuizOptions();
 
-  const answers = answersByQuestionIdx[questionIdx];
-
-  const answersInOrder = [...question.answers];
-  answersInOrder.sort((a, b) => {
-    return answers.indexOf(a.answer) - answers.indexOf(b.answer);
+  const randomAnswerIds = answerIdsByQuestionIdx[questionIdx];
+  const randomAnswers: Answer[] = [...question.answers];
+  randomAnswers.sort((a, b) => {
+    return (
+      randomAnswerIds.indexOf(a.internalId) -
+      randomAnswerIds.indexOf(b.internalId)
+    );
   });
 
   const hasAnswered = selectedAnswerIndexes[questionIdx] !== null;
@@ -72,12 +74,11 @@ const QuestionInput = ({ question }: { question: Question }) => {
         </>
       ) : null}
       <View style={{ flexDirection: "column", justifyContent: "flex-start" }}>
-        {answersInOrder.map((answer, idx) => (
+        {randomAnswers.map((answer) => (
           <AnswerOption
             key={getIdForAnswer(answer)}
             questionIdx={questionIdx}
             answer={answer}
-            idx={idx}
           />
         ))}
       </View>

@@ -425,11 +425,19 @@ const QuizEndedView = () => {
   const quizState = useAppSelector((state) => state.quiz);
 
   if (!questionIds) {
-    return <ThemedText>No question IDs</ThemedText>;
+    return (
+      <ThemedText>
+        No question IDs <EndQuizButton />
+      </ThemedText>
+    );
   }
 
   if (!area) {
-    return <ThemedText>No area</ThemedText>;
+    return (
+      <ThemedText>
+        No area <EndQuizButton />
+      </ThemedText>
+    );
   }
 
   const correctCount = tallyCorrectAnswers(quizState, area.questions);

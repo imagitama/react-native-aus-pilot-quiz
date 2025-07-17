@@ -11,11 +11,9 @@ import { IconSymbol } from "./ui/IconSymbol";
 const AnswerOption = ({
   questionIdx,
   answer,
-  idx,
 }: {
   questionIdx: number;
   answer: Answer;
-  idx: number;
 }) => {
   const dispatch = useAppDispatch();
   const toggleAnswer = () =>

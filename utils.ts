@@ -77,14 +77,14 @@ export function tallyCorrectAnswers(
     const explicitCorrectAnswer = question.answers.find(
       (answer) => answer.correct
     );
-    const correctAnswerText = explicitCorrectAnswer
-      ? explicitCorrectAnswer.answer
-      : question.answers[0].answer;
-    const finalAnswerText = shuffledAnswerIds.find(
+    const correctAnswerId = explicitCorrectAnswer
+      ? explicitCorrectAnswer.internalId
+      : question.answers[0].internalId;
+    const finalAnswerId = shuffledAnswerIds.find(
       (id) => id === finalAnswer.answerId
     );
 
-    if (finalAnswerText === correctAnswerText) {
+    if (finalAnswerId === correctAnswerId) {
       tally++;
     }
   }
