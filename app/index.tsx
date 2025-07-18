@@ -2,6 +2,7 @@ import { Stack, useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
 import Button from "@/components/Button";
+import Gap from "@/components/Gap";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import UploadQuestionDataForm from "@/components/UploadQuestionDataForm";
@@ -37,6 +38,7 @@ export default function MainMenu() {
         />
         <View style={{ height: 100 }} />
         <ThemedText type="subtitle">Upload custom questions</ThemedText>
+        <Gap tiny />
         <UploadQuestionDataForm />
         <View style={{ height: 25 }} />
         <Button

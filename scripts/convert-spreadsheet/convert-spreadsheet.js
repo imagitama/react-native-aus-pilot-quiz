@@ -31,19 +31,23 @@ if (!fs.existsSync(filePath)) {
 const outputFilePath = path.resolve(__dirname, "output.json");
 
 // Load or create output.json
-let data = { levels: [] };
+let data = { children: [] };
 if (fs.existsSync(outputFilePath)) {
   try {
     const parsed = JSON.parse(fs.readFileSync(outputFilePath, "utf-8"));
-    if (parsed && typeof parsed === "object" && Array.isArray(parsed.levels)) {
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      Array.isArray(parsed.children)
+    ) {
       data = parsed;
     } else {
       console.warn("Invalid structure in output.json. Resetting to empty.");
-      data = { levels: [] };
+      data = { children: [] };
     }
   } catch {
     console.warn("Could not parse output.json, starting fresh.");
-    data = { levels: [] };
+    data = { children: [] };
   }
 }
 
@@ -66,28 +70,28 @@ function ask(question) {
  * Helpers to build hierarchy
  */
 function getOrCreateLevel(data, name) {
-  let level = data.levels.find((l) => l.name === name);
+  let level = data.children.find((l) => l.name === name);
   if (!level) {
-    level = { name, areas: [] };
-    data.levels.push(level);
+    level = { name, children: [] };
+    data.children.push(level);
   }
   return level;
 }
 
 function getOrCreateArea(level, name) {
-  let area = level.areas.find((a) => a.name === name);
+  let area = level.children.find((a) => a.name === name);
   if (!area) {
-    area = { name, sections: [] };
-    level.areas.push(area);
+    area = { name, children: [] };
+    level.children.push(area);
   }
   return area;
 }
 
 function getOrCreateSection(area, name) {
-  let section = area.sections.find((s) => s.name === name);
+  let section = area.children.find((s) => s.name === name);
   if (!section) {
     section = { name, questions: [] };
-    area.sections.push(section);
+    area.children.push(section);
   }
   return section;
 }
@@ -104,11 +108,11 @@ function saveProgress() {
  * Find an existing question
  */
 function findSavedQuestion(levelName, areaName, sectionName, questionText) {
-  const level = data.levels.find((l) => l.name === levelName);
+  const level = data.children.find((l) => l.name === levelName);
   if (!level) return null;
-  const area = level.areas.find((a) => a.name === areaName);
+  const area = level.children.find((a) => a.name === areaName);
   if (!area) return null;
-  const section = area.sections.find((s) => s.name === sectionName);
+  const section = area.children.find((s) => s.name === sectionName);
   if (!section) return null;
   return section.questions.find((q) => q.question === questionText);
 }
@@ -266,7 +270,9 @@ function parseSpreadsheet(filePath) {
             ? [
                 {
                   answer: row.correct,
-                  reference: row["red book num"] || undefined,
+                  reference: row["red book num"]
+                    ? `Red Book: ${row["red book num"]}`
+                    : "",
                 },
               ]
             : []),

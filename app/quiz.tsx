@@ -13,6 +13,7 @@ import { ThemedView } from "@/components/ThemedView";
 import {
   Options,
   configureQuizAction,
+  goToSelectNodeAction,
   nextQuestionAction,
   prevQuestionAction,
   quitQuizAction,
@@ -34,7 +35,7 @@ import useQuestionData from "@/hooks/useQuestionData";
 import useSelectedNode from "@/hooks/useSelectedNode";
 import { AppState, LevelNode } from "@/types";
 import { collectQuestions, tallyCorrectAnswers } from "@/utils";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 
 const SelectNodeSubView = () => {
   const [questionData] = useQuestionData();
@@ -179,6 +180,13 @@ const ConfigureSubView = () => {
     dispatch(setOptionsAction(newOptions));
   const resetOptions = () => dispatch(resetOptionsAction());
   const [selectedNode] = useSelectedNode();
+  const goToSelectNode = () => dispatch(goToSelectNodeAction());
+
+  useEffect(() => {
+    if (!selectedNode) {
+      goToSelectNode();
+    }
+  }, [selectedNode === null]);
 
   if (!selectedNode) {
     return <ThemedText>Waiting for selected node with questions</ThemedText>;

@@ -1,7 +1,7 @@
 import { pickJsonFile } from "@/docs";
 import useQuestionData from "@/hooks/useQuestionData";
 import { LevelNode, QuestionData } from "@/types";
-import { collectNodes, collectQuestions } from "@/utils";
+import { collectQuestions } from "@/utils";
 import { useState } from "react";
 import { Platform } from "react-native";
 import Button from "./Button";
@@ -75,11 +75,10 @@ const UploadQuestionDataForm = () => {
     return (
       <ThemedView>
         <ThemedText>
-          Your JSON file has {collectNodes(newQuestionData as LevelNode).length}{" "}
-          nodes and {collectQuestions(newQuestionData as LevelNode).length}{" "}
+          Detected {collectQuestions(newQuestionData as LevelNode).length}{" "}
           questions
         </ThemedText>
-        <Button title="Import" onPress={onImport} />
+        <Button title="Import Quiz" onPress={onImport} />
       </ThemedView>
     );
   }

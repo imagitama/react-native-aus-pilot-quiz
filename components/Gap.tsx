@@ -1,10 +1,12 @@
 import { View } from "react-native";
 
 const Gap = ({
+  tiny,
   small,
   normal,
   large,
 }: {
+  tiny?: boolean;
   small?: boolean;
   normal?: boolean;
   large?: boolean;
@@ -12,7 +14,7 @@ const Gap = ({
   <View
     style={{
       borderBottomColor: "transparent",
-      borderBottomWidth: small ? 25 : large ? 100 : 50,
+      borderBottomWidth: tiny ? 10 : small ? 25 : large ? 100 : 50,
     }}
   />
 );

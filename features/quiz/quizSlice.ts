@@ -204,7 +204,7 @@ export const quizSlice = createSlice({
 
       const questionLimit = allQuestions.length > 10 ? 10 : allQuestions.length;
 
-      state.options.questionLimit;
+      state.options.questionLimit = questionLimit;
       state.selectedNodeId = nodeId;
 
       console.log("selectNode", {
