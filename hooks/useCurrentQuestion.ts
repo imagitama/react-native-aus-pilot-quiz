@@ -3,16 +3,23 @@ import {
   selectQuestionIds,
 } from "@/features/quiz/quizSlice";
 import { Question } from "@/types";
-import { getIdForQuestion } from "@/utils";
+import { findQuestionById } from "@/utils";
 import { useAppSelector } from "./state";
-import useArea from "./useArea";
+import useQuestionData from "./useQuestionData";
+import useSelectedNode from "./useSelectedNode";
 
 const useCurrentQuestion = (): Question | null => {
-  const area = useArea();
+  const [selectedNode] = useSelectedNode();
+  const [questionData] = useQuestionData();
   const currentQuestionIdx = useAppSelector(selectCurrentQuestionIdx);
   const questionIds = useAppSelector(selectQuestionIds);
 
-  if (area === null || currentQuestionIdx === null || questionIds === null) {
+  if (
+    selectedNode === null ||
+    currentQuestionIdx === null ||
+    questionIds === null ||
+    !questionData
+  ) {
     return null;
   }
 
@@ -25,13 +32,11 @@ const useCurrentQuestion = (): Question | null => {
     return null;
   }
 
-  const question = area.questions.find(
-    (question) => getIdForQuestion(question) === questionId
-  );
+  const question = findQuestionById([selectedNode], questionId);
 
   if (!question) {
     throw new Error(
-      `Could not find current question with ID ${questionId} (area "${area.name}")`
+      `Could not find current question with ID ${questionId} (selectedNode "${selectedNode.name}")`
     );
   }
 

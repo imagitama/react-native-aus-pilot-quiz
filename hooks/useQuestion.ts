@@ -1,17 +1,15 @@
 import { Question } from "@/types";
-import { getIdForQuestion } from "@/utils";
-import useArea from "./useArea";
+import { findQuestionById } from "@/utils";
+import useSelectedNode from "./useSelectedNode";
 
 const useQuestion = (id: string): Question | null => {
-  const area = useArea();
+  const [selectedNode] = useSelectedNode();
 
-  if (!area) {
+  if (!selectedNode) {
     return null;
   }
 
-  const question = area.questions.find(
-    (question) => getIdForQuestion(question) === id
-  );
+  const question = findQuestionById([selectedNode], id);
 
   if (!question) {
     console.warn(`Could not find question with ID ${id}`);

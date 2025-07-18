@@ -1,8 +1,8 @@
 {
-  "levels": [
+  "children": [
     {
       "name": "RPL",
-      "areas": [
+      "children": [
         {
           "name": "Lift",
           "questions": [

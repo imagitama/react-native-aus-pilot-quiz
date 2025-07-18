@@ -4,26 +4,24 @@ export enum Mode {
 
 export enum AppState {
   MainMenu,
+  SelectNode,
+  Configure,
   Progress,
   Ended,
 }
 
 export interface QuestionData {
-  levels: Level[];
+  children: LevelNode[];
 }
 
 export type QuestionsJson = QuestionData;
 
-export interface Level {
-  abbr?: string;
+export interface LevelNode {
+  internalId: string; // generated
   name: string;
-  areas: Area[];
-}
-
-export interface Area {
   abbr?: string;
-  name: string;
-  questions: Question[];
+  questions?: Question[];
+  children?: LevelNode[];
 }
 
 export interface Question {

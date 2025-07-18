@@ -1,6 +1,6 @@
 import Slider from "@react-native-community/slider";
 import { Stack, useRouter } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Checkbox } from "react-native-paper";
 
 import alert from "@/alert";
@@ -11,6 +11,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import {
   Options,
+  configureQuizAction,
   nextQuestionAction,
   prevQuestionAction,
   quitQuizAction,
@@ -21,117 +22,95 @@ import {
   selectFinalAnswersByQuestionIdx,
   selectOptions,
   selectQuestionIds,
-  selectSelectedAreaId,
-  selectSelectedLevelId,
   setOptionsAction,
-  setSelectedAreaIdAction,
-  setSelectedLevelIdAction,
   startQuizAction,
 } from "@/features/quiz/quizSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
-import useArea from "@/hooks/useArea";
 import useCurrentQuestion from "@/hooks/useCurrentQuestion";
-import useLevel from "@/hooks/useLevel";
 import useLoadInitialQuestionData from "@/hooks/useLoadInitialQuestionData";
 import useQuestionData from "@/hooks/useQuestionData";
-import { AppState } from "@/types";
-import { tallyCorrectAnswers } from "@/utils";
-import { useEffect } from "react";
+import useSelectedNode from "@/hooks/useSelectedNode";
+import { AppState, LevelNode } from "@/types";
+import { collectQuestions, tallyCorrectAnswers } from "@/utils";
 
-const SelectLevelView = () => {
-  const dispatch = useAppDispatch();
-  const setSelectedLevelId = (id: string) =>
-    dispatch(setSelectedLevelIdAction(id));
+const SelectNodeSubView = () => {
   const [questionData] = useQuestionData();
   const loadInitialQuestionData = useLoadInitialQuestionData(false);
+  const [selectedNode, setSelectedNodeId] = useSelectedNode();
+  const dispatch = useAppDispatch();
+  const configureQuiz = () => dispatch(configureQuizAction());
 
-  if (!questionData) {
+  if (!questionData || !questionData.children) {
     return (
       <ThemedText>
         You must load some question data to get started{" "}
-        <Button title="Load default data" onPress={loadInitialQuestionData} />
+        <Button title="Load default data" onPress={loadInitialQuestionData} />{" "}
+        <EndQuizButton />
       </ThemedText>
     );
   }
 
+  const onPressSelect = () => {
+    if (!selectedNode) {
+      console.warn("No selected node");
+      return;
+    }
+    setSelectedNodeId(selectedNode.internalId);
+    configureQuiz();
+  };
+
   return (
     <>
-      <ThemedText type="title">Choose your study level</ThemedText>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 25,
-        }}
-      />
-      {questionData.levels.map((level) => (
-        <ThemedText
-          key={level.name}
-          type="link"
-          onPress={() => setSelectedLevelId(level.name)}
-        >
-          {level.name} ({level.areas.length} areas)
-        </ThemedText>
+      <ThemedText type="title">Choose your questions</ThemedText>
+      {selectedNode ? (
+        <>
+          <View style={{ borderBottomColor: "white", borderBottomWidth: 25 }} />
+          <ThemedText type="subtitle">Chosen: {selectedNode.name}</ThemedText>
+          <View style={{ borderBottomColor: "white", borderBottomWidth: 25 }} />
+          <Button title="Start Quiz" onPress={onPressSelect} />
+        </>
+      ) : null}
+      <View style={{ borderBottomColor: "white", borderBottomWidth: 25 }} />
+
+      {(selectedNode && selectedNode.children
+        ? selectedNode.children
+        : questionData.children
+      ).map((node) => (
+        <NodeItem key={node.internalId} node={node} />
       ))}
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 100,
-        }}
-      />
+
+      <View style={{ borderBottomColor: "white", borderBottomWidth: 100 }} />
       <EndQuizButton />
     </>
   );
 };
 
-const SelectAreaView = () => {
-  const dispatch = useAppDispatch();
-  const setSelectedAreaId = (id: string) =>
-    dispatch(setSelectedAreaIdAction(id));
-  const level = useLevel();
+const NodeItem = ({ node }: { node: LevelNode }) => {
+  const [, setSelectedNodeId] = useSelectedNode();
 
-  if (!level) {
-    return <ThemedText>Loading level...</ThemedText>;
-  }
+  const onPressItem = () => setSelectedNodeId(node.internalId);
 
   return (
     <>
-      <ThemedText type="title">Choose your area</ThemedText>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 25,
-        }}
-      />
-      {level.areas.map((area) => (
-        <ThemedText
-          key={area.name}
-          type="link"
-          onPress={() => setSelectedAreaId(area.name)}
-        >
-          {area.name} ({area.questions.length} questions)
-        </ThemedText>
-      ))}
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 100,
-        }}
-      />
-      <EndQuizButton />
+      <ThemedText type="link" onPress={onPressItem}>
+        {node.name} ({collectQuestions(node).length})
+      </ThemedText>
     </>
   );
 };
 
-const QuizView = () => {
+const Content = () => {
   const appState = useAppSelector(selectAppState);
 
   switch (appState) {
-    case AppState.MainMenu:
-      return <ConfigureQuizView />;
+    case AppState.SelectNode:
+      return <SelectNodeSubView />;
+    case AppState.Configure:
+      return <ConfigureSubView />;
     case AppState.Progress:
       return (
         <>
-          <QuizInProgressView />
+          <QuizInProgressSubView />
           <View
             style={{
               borderBottomColor: "white",
@@ -142,7 +121,7 @@ const QuizView = () => {
         </>
       );
     case AppState.Ended:
-      return <QuizEndedView />;
+      return <QuizEndedSubView />;
     default:
       return <ThemedText>Unknown app state {appState}</ThemedText>;
   }
@@ -171,12 +150,16 @@ const EndQuizButton = () => {
   return <Button title="End Quiz" onPress={confirmEndQuiz} type="ghost" />;
 };
 
-const ConfigureQuizView = () => {
+const ConfigureSubView = () => {
   const dispatch = useAppDispatch();
-  const area = useArea();
   const options = useAppSelector(selectOptions);
   const updateOptions = (newOptions: Options) =>
     dispatch(setOptionsAction(newOptions));
+  const [selectedNode] = useSelectedNode();
+
+  if (!selectedNode) {
+    return <ThemedText>Waiting for selected node with questions</ThemedText>;
+  }
 
   const updateOption = <K extends keyof Options>(
     name: K,
@@ -188,11 +171,9 @@ const ConfigureQuizView = () => {
     });
   };
 
-  if (!area) {
-    return <Text>Loading area...</Text>;
-  }
+  const startQuiz = () => dispatch(startQuizAction());
 
-  const startQuiz = () => dispatch(startQuizAction(area));
+  const questions = collectQuestions(selectedNode);
 
   return (
     <>
@@ -340,27 +321,27 @@ const ConfigureQuizView = () => {
         style={{ width: "100%", height: 40 }}
         minimumValue={1}
         step={1}
-        maximumValue={area.questions.length}
+        maximumValue={questions.length}
         minimumTrackTintColor="#1EB1FC"
         maximumTrackTintColor="#8ED1FC"
         thumbTintColor="#1EB1FC"
       />
       <ThemedText>
-        {options.questionLimit}/{area.questions.length}
+        {options.questionLimit}/{questions.length}
       </ThemedText>
       <Button
         title="Reset Limit"
         onPress={() =>
           updateOption(
             "questionLimit",
-            area.questions.length > 10 ? 10 : area.questions.length
+            questions.length > 10 ? 10 : questions.length
           )
         }
         type="ghost"
       />
       <Button
         title="Max"
-        onPress={() => updateOption("questionLimit", area.questions.length)}
+        onPress={() => updateOption("questionLimit", questions.length)}
         type="ghost"
       />
       <View
@@ -381,31 +362,19 @@ const ConfigureQuizView = () => {
   );
 };
 
-const QuizInProgressView = () => {
+const QuizInProgressSubView = () => {
   const dispatch = useAppDispatch();
   const prevQuestion = () => dispatch(prevQuestionAction());
   const nextQuestion = () => dispatch(nextQuestionAction());
-  const area = useArea();
-  const startQuiz = () => dispatch(startQuizAction(area!));
+  const [selectedNode] = useSelectedNode();
   const question = useCurrentQuestion();
   const questionIds = useAppSelector(selectQuestionIds);
   const answersByQuestionIdx = useAppSelector(selectAnswerIdsByQuestionIdx);
   const selectedAnswerIndexes = useAppSelector(selectFinalAnswersByQuestionIdx);
   const currentQuestionIdx = useAppSelector(selectCurrentQuestionIdx);
 
-  useEffect(() => {
-    if (!area || !area.questions.length) {
-      return;
-    }
-
-    startQuiz();
-  }, [area !== null]);
-
-  if (!area) {
-    return <ThemedText>Loading area...</ThemedText>;
-  }
-  if (!area.questions.length) {
-    return <ThemedText>Area has no questions</ThemedText>;
+  if (!selectedNode) {
+    return <ThemedText>Loading node...</ThemedText>;
   }
   if (!question) {
     return <ThemedText>Loading question...</ThemedText>;
@@ -460,9 +429,9 @@ const QuizInProgressView = () => {
   );
 };
 
-const QuizEndedView = () => {
+const QuizEndedSubView = () => {
   const dispatch = useAppDispatch();
-  const area = useArea();
+  const [selectedNode] = useSelectedNode();
   const quitQuiz = () => dispatch(quitQuizAction());
   const restartQuiz = () => dispatch(restartQuizAction());
   const questionIds = useAppSelector(selectQuestionIds);
@@ -476,15 +445,17 @@ const QuizEndedView = () => {
     );
   }
 
-  if (!area) {
+  if (!selectedNode) {
     return (
       <ThemedText>
-        No area <EndQuizButton />
+        No selected node <EndQuizButton />
       </ThemedText>
     );
   }
 
-  const correctCount = tallyCorrectAnswers(quizState, area.questions);
+  const questions = collectQuestions(selectedNode);
+
+  const correctCount = tallyCorrectAnswers(quizState, questions);
 
   const confirmRestart = () => {
     alert(
@@ -548,21 +519,6 @@ const QuizEndedView = () => {
   );
 };
 
-const Content = () => {
-  const selectedLevelId = useAppSelector(selectSelectedLevelId);
-  const selectedAreaId = useAppSelector(selectSelectedAreaId);
-
-  if (!selectedLevelId) {
-    return <SelectLevelView />;
-  }
-
-  if (!selectedAreaId) {
-    return <SelectAreaView />;
-  }
-
-  return <QuizView />;
-};
-
 const getBreadcrumbs = (...items: (string | undefined)[]): string => {
   let str = "";
 
@@ -579,8 +535,7 @@ const getBreadcrumbs = (...items: (string | undefined)[]): string => {
 
 export default function Quiz() {
   const data = useQuestionData();
-  const level = useLevel();
-  const area = useArea();
+  const [selectedNode] = useSelectedNode();
   const currentQuestionIdx = useAppSelector(selectCurrentQuestionIdx);
 
   if (!data) {
@@ -592,8 +547,7 @@ export default function Quiz() {
       <Stack.Screen
         options={{
           title: `Quiz${getBreadcrumbs(
-            level?.name,
-            area?.name,
+            selectedNode?.name,
             currentQuestionIdx !== null
               ? `Question ${currentQuestionIdx + 1}`
               : undefined

@@ -1,5 +1,5 @@
 import { QuizState } from "./features/quiz/quizSlice";
-import { Answer, Question, QuestionData } from "./types";
+import { Answer, LevelNode, Question } from "./types";
 
 export function shuffleArray<T>(array: T[]): T[] {
   const result = JSON.parse(JSON.stringify(array));
@@ -14,7 +14,7 @@ export function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function slugify(input: string): string {
+export function slugify(input: string): string {
   return input
     .toLowerCase()
     .normalize("NFD") // separate accents
@@ -81,7 +81,7 @@ export function tallyCorrectAnswers(
       ? explicitCorrectAnswer.internalId
       : question.answers[0].internalId;
     const finalAnswerId = shuffledAnswerIds.find(
-      (id) => id === finalAnswer.answerId
+      (id) => "answerId" in finalAnswer && id === finalAnswer.answerId
     );
 
     if (finalAnswerId === correctAnswerId) {
@@ -92,62 +92,63 @@ export function tallyCorrectAnswers(
   return tally;
 }
 
-export const purgeDuplicateQuestionData = (
-  data: QuestionData
-): QuestionData => {
-  const seenLevelNames = new Set<string>();
+export function findNodeById(
+  nodes: LevelNode[],
+  nodeId: string
+): LevelNode | null {
+  for (const node of nodes) {
+    if (node.internalId === nodeId) return node;
 
-  let answerId = 0;
+    if (node.children) {
+      const found = findNodeById(node.children, nodeId);
+      if (found) return found;
+    }
+  }
+  return null;
+}
 
-  const levels = data.levels
-    .filter((level) => {
-      if (seenLevelNames.has(level.name)) return false;
-      seenLevelNames.add(level.name);
-      return true;
-    })
-    .map((level) => {
-      const seenAreaNames = new Set<string>();
+export function collectQuestions(node: LevelNode): Question[] {
+  let questions: Question[] = [];
 
-      const areas = level.areas
-        .filter((area) => {
-          if (seenAreaNames.has(area.name)) return false;
-          seenAreaNames.add(area.name);
-          return true;
-        })
-        .map((area) => {
-          const seenQuestions = new Set<string>();
+  if (node.questions) {
+    questions = [...node.questions];
+  }
 
-          const questions = area.questions
-            .filter((question) => {
-              if (seenQuestions.has(question.question)) return false;
-              seenQuestions.add(question.question);
-              return true;
-            })
-            .map((question) => {
-              const seenAnswers = new Set<string>();
+  if (node.children) {
+    for (const child of node.children) {
+      questions.push(...collectQuestions(child));
+    }
+  }
 
-              let answers = question.answers.filter((answer) => {
-                if (seenAnswers.has(answer.answer)) return false;
-                seenAnswers.add(answer.answer);
-                return true;
-              });
+  return questions;
+}
 
-              answers = answers.map((answer) => {
-                answerId++;
-                return {
-                  ...answer,
-                  internalId: answerId.toString(),
-                };
-              });
+export function collectNodes(node: LevelNode): LevelNode[] {
+  let nodes: LevelNode[] = [];
 
-              return { ...question, answers };
-            });
+  if (node.children) {
+    for (const child of node.children) {
+      nodes.push(...collectNodes(child));
+    }
+  }
 
-          return { ...area, questions };
-        });
+  return nodes;
+}
 
-      return { ...level, areas };
-    });
-
-  return { levels };
-};
+export function findQuestionById(
+  nodes: LevelNode[],
+  questionId: string
+): Question | null {
+  for (const node of nodes) {
+    if (node.children) {
+      const found = findQuestionById(node.children, questionId);
+      if (found) return found;
+    } else if (node.questions) {
+      const found = node.questions.find(
+        (question) => getIdForQuestion(question) === questionId
+      );
+      if (found) return found;
+    }
+  }
+  return null;
+}

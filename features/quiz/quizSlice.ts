@@ -1,8 +1,10 @@
-import { AppState, Area, FinalAnswer, Mode, QuestionData } from "@/types";
+import { AppState, FinalAnswer, LevelNode, Mode, QuestionData } from "@/types";
 import {
+  collectQuestions,
+  findNodeById,
   getIdForQuestion,
-  purgeDuplicateQuestionData,
   shuffleArray,
+  slugify,
 } from "@/utils";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
@@ -33,8 +35,7 @@ export interface QuizState {
   isLoadingQuestionData: boolean;
   currentAppState: AppState;
   selectedMode: Mode | null;
-  selectedLevelId: string | null;
-  selectedAreaId: string | null;
+  selectedNodeId: string | null;
   questionIds: string[] | null;
   currentQuestionIdx: number | null;
   answerIdsByQuestionIdx: string[][] | null;
@@ -48,8 +49,7 @@ const initialState: QuizState = {
   isLoadingQuestionData: false,
   currentAppState: AppState.MainMenu,
   selectedMode: null,
-  selectedLevelId: null,
-  selectedAreaId: null,
+  selectedNodeId: null,
   questionIds: null,
   currentQuestionIdx: null,
   answerIdsByQuestionIdx: null,
@@ -101,27 +101,26 @@ const nextQuestion = (state: QuizState) => {
 };
 
 const startQuiz = (state: QuizState) => {
-  if (!state.questionData || !state.selectedLevelId || !state.selectedAreaId) {
+  if (!state.questionData || !state.selectedNodeId) {
     throw new Error("Cannot start quiz: missing data");
   }
 
-  const selectedLevel = state.questionData!.levels.find(
-    (level) => level.name === state.selectedLevelId
+  const selectedNode = findNodeById(
+    state.questionData.children,
+    state.selectedNodeId
   );
 
-  const selectedArea = selectedLevel?.areas.find(
-    (area) => area.name === state.selectedAreaId
-  );
-
-  if (!selectedLevel || !selectedArea) {
-    throw new Error("Cannot start quiz: no selected level or area");
+  if (!selectedNode) {
+    throw new Error("Cannot start quiz: no selected node");
   }
+
+  const questions = collectQuestions(selectedNode);
 
   const limit = state.options.questionLimit;
 
   let questionsToAsk = state.options.randomizeQuestions
-    ? shuffleArray(selectedArea.questions)
-    : [...selectedArea.questions];
+    ? shuffleArray(questions)
+    : [...questions];
 
   questionsToAsk = questionsToAsk.slice(0, limit);
 
@@ -136,7 +135,7 @@ const startQuiz = (state: QuizState) => {
     ).map((answer) => answer.internalId)
   );
 
-  console.debug(`starting quiz for area "${selectedArea.name}" with questions:
+  console.debug(`starting quiz for node "${selectedNode.name}" with questions:
 \t${questionsToAsk.map((question) => question.question).join("\n\t")}
 answers by idx:
 \t${state.answerIdsByQuestionIdx.map((answerIds, questionIdx) => `${questionIdx}: ${answerIds.join(",")}`).join("\n\n\t")}`);
@@ -147,48 +146,68 @@ answers by idx:
   state.currentAppState = AppState.Progress;
 };
 
+const addInternalIds = (questionData: QuestionData): QuestionData => {
+  return {
+    ...questionData,
+    children: questionData.children.map(addInternalIdsToNode),
+  };
+};
+
+const addInternalIdsToNode = (node: LevelNode): LevelNode => {
+  const internalId = slugify(node.name);
+
+  return {
+    ...node,
+    internalId,
+    children: node.children
+      ? node.children.map(addInternalIdsToNode)
+      : undefined,
+    questions: node.questions
+      ? node.questions.map((q) => ({
+          ...q,
+          internalId: slugify(q.question),
+          answers: q.answers
+            ? q.answers.map((a) => ({ ...a, internalId: slugify(a.answer) }))
+            : [],
+        }))
+      : undefined,
+  };
+};
+
 export const quizSlice = createSlice({
   name: "quiz",
   initialState,
   reducers: {
     storeQuestionData: (state, action: PayloadAction<QuestionData>) => {
-      const purgedData = purgeDuplicateQuestionData(action.payload);
+      const newQuestionData = addInternalIds(action.payload);
 
       console.log("storeQuestionData", {
-        old: action.payload,
-        new: purgedData,
+        old: newQuestionData,
       });
 
-      state.questionData = purgedData;
+      state.questionData = newQuestionData;
     },
-    setSelectedLevelId: (
-      state,
-      action: PayloadAction<QuizState["selectedLevelId"]>
-    ) => {
-      state.selectedLevelId = action.payload;
-    },
-    setSelectedAreaId: (state, action: PayloadAction<string>) => {
-      const areaId = action.payload;
+    setSelectedNodeId: (state, action: PayloadAction<string>) => {
+      const nodeId = action.payload;
 
-      if (!state.questionData || !state.questionData) {
+      if (!state.questionData) {
         throw new Error("Need question data");
       }
 
-      let area;
+      const node = findNodeById(state.questionData.children, nodeId);
 
-      for (const level of state.questionData?.levels) {
-        area = level.areas.find((area) => area.name === areaId);
+      if (!node) {
+        throw new Error(`Cannot select node with ID "${nodeId}": not found`);
       }
 
-      if (!area) {
-        throw new Error(`Cannot select area with ID "${areaId}": not found`);
-      }
+      const allQuestions = collectQuestions(node);
 
       state.options.questionLimit =
-        area.questions.length > 10 ? 10 : area.questions.length;
+        allQuestions.length > 10 ? 10 : allQuestions.length;
 
-      state.selectedAreaId = areaId;
+      state.selectedNodeId = nodeId;
     },
+
     nextQuestion: (state) => {
       nextQuestion(state);
     },
@@ -247,7 +266,15 @@ export const quizSlice = createSlice({
         nextQuestion(state);
       }
     },
-    startQuiz: (state, action: PayloadAction<Area>) => {
+    goToSelectNode: (state) => {
+      console.log("goToSelectNode");
+      state.currentAppState = AppState.SelectNode;
+    },
+    configureQuiz: (state) => {
+      console.log("configureQuiz");
+      state.currentAppState = AppState.Configure;
+    },
+    startQuiz: (state) => {
       console.log("startQuiz");
       startQuiz(state);
     },
@@ -259,14 +286,13 @@ export const quizSlice = createSlice({
       console.log("quitQuiz");
 
       state.selectedMode = null;
-      state.selectedLevelId = null;
-      state.selectedAreaId = null;
+      state.selectedNodeId = null;
       state.questionIds = null;
       state.currentQuestionIdx = null;
       state.answerIdsByQuestionIdx = null;
       state.finalAnswersByQuestionIdx = null;
 
-      state.currentAppState = AppState.MainMenu;
+      state.currentAppState = AppState.SelectNode;
     },
     setOptions: (state, action: PayloadAction<Options>) => {
       const newOptions = action.payload;
@@ -303,11 +329,12 @@ export const quizSlice = createSlice({
 
 export const {
   storeQuestionData: storeQuestionDataAction,
-  setSelectedLevelId: setSelectedLevelIdAction,
-  setSelectedAreaId: setSelectedAreaIdAction,
+  setSelectedNodeId: setSelectedNodeIdAction,
   toggleFinalAnswerId: toggleFinalAnswerIdAction,
   nextQuestion: nextQuestionAction,
   prevQuestion: prevQuestionAction,
+  goToSelectNode: goToSelectNodeAction,
+  configureQuiz: configureQuizAction,
   startQuiz: startQuizAction,
   restartQuiz: restartQuizAction,
   quitQuiz: quitQuizAction,
@@ -323,10 +350,8 @@ export const selectIsLoadingQuestionData = (state: RootState) =>
   state.quiz.isLoadingQuestionData;
 export const selectAppState = (state: RootState) => state.quiz.currentAppState;
 export const selectSelectedMode = (state: RootState) => state.quiz.selectedMode;
-export const selectSelectedLevelId = (state: RootState) =>
-  state.quiz.selectedLevelId;
-export const selectSelectedAreaId = (state: RootState) =>
-  state.quiz.selectedAreaId;
+export const selectSelectedNodeId = (state: RootState) =>
+  state.quiz.selectedNodeId;
 export const selectCurrentQuestionIdx = (state: RootState) =>
   state.quiz.currentQuestionIdx;
 export const selectFinalAnswersByQuestionIdx = (state: RootState) =>

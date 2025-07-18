@@ -4,23 +4,18 @@ The minimum structure of your JSON must be:
 
 ```json
 {
-  "levels": [
+  "children": [
     {
-      "name": "My cool level",
-      "areas": [
+      "name": "My cool area",
+      "questions": [
         {
-          "name": "My cool area",
-          "questions": [
+          "question": "What is cool about this question?",
+          "answers": [
             {
-              "question": "What is cool about this question?",
-              "answers": [
-                {
-                  "answer": "It is cool!"
-                },
-                {
-                  "answer": "It is not cool"
-                }
-              ]
+              "answer": "It is cool!"
+            },
+            {
+              "answer": "It is not cool"
             }
           ]
         }
@@ -29,6 +24,8 @@ The minimum structure of your JSON must be:
   ]
 }
 ```
+
+You can have infinite levels of children.
 
 ## Answers
 

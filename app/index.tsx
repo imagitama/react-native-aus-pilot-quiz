@@ -6,13 +6,14 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import UploadQuestionDataForm from "@/components/UploadQuestionDataForm";
 import { downloadFile } from "@/downloading";
-import { clearAction } from "@/features/quiz/quizSlice";
+import { clearAction, goToSelectNodeAction } from "@/features/quiz/quizSlice";
 import { useDispatch } from "react-redux";
 
 export default function MainMenu() {
   const router = useRouter();
   const dispatch = useDispatch();
   const clear = () => dispatch(clearAction());
+  const goToSelectNode = () => dispatch(goToSelectNodeAction());
   const downloadExampleQuestions = () =>
     downloadFile("/questions/questions-example.json");
   const downloadReadme = () => downloadFile("/questions/README.md");
@@ -27,7 +28,13 @@ export default function MainMenu() {
       <ThemedView style={styles.container}>
         <ThemedText type="title">Main Menu</ThemedText>
         <View style={{ height: 50 }} />
-        <Button title="Enter Quiz" onPress={() => router.push("/quiz")} />
+        <Button
+          title="Enter Quiz"
+          onPress={() => {
+            goToSelectNode();
+            router.push("/quiz");
+          }}
+        />
         <View style={{ height: 100 }} />
         <ThemedText type="subtitle">Upload custom questions</ThemedText>
         <UploadQuestionDataForm />

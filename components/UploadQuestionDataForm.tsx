@@ -1,6 +1,7 @@
 import { pickJsonFile } from "@/docs";
 import useQuestionData from "@/hooks/useQuestionData";
-import { QuestionData } from "@/types";
+import { LevelNode, QuestionData } from "@/types";
+import { collectNodes, collectQuestions } from "@/utils";
 import { useState } from "react";
 import { Platform } from "react-native";
 import Button from "./Button";
@@ -30,7 +31,7 @@ const UploadQuestionDataForm = () => {
   };
 
   const onNewJson = (json: any) => {
-    if (!json.levels) {
+    if (!json.children) {
       setErrorCode(ErrorCode.NO_LEVELS);
       return;
     }
@@ -74,21 +75,8 @@ const UploadQuestionDataForm = () => {
     return (
       <ThemedView>
         <ThemedText>
-          Your question data has {newQuestionData.levels.length} levels,{" "}
-          {newQuestionData.levels.reduce(
-            (count, level) => count + level.areas.length,
-            0
-          )}{" "}
-          areas and{" "}
-          {newQuestionData.levels.reduce(
-            (count, level) =>
-              count +
-              level.areas.reduce(
-                (questionCount, area) => questionCount + area.questions.length,
-                0
-              ),
-            0
-          )}{" "}
+          Your JSON file has {collectNodes(newQuestionData as LevelNode).length}{" "}
+          nodes and {collectQuestions(newQuestionData as LevelNode).length}{" "}
           questions
         </ThemedText>
         <Button title="Import" onPress={onImport} />
