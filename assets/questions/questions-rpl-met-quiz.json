@@ -1,0 +1,441 @@
+{
+  "children": [
+    {
+      "name": "Meteorology",
+      "questions": [
+        {
+          "number": "1",
+          "question": "When you encounter turbulence in the vicinity of a thunderstorm what should you do?",
+          "source": "RPL MET Quiz",
+          "answers": [
+            {
+              "answer": "Immediately reduce speed by reducing thrust and pulling back on the controls"
+            },
+            {
+              "answer": "Immediately reduce speed by reducing thrust and fly at the slowest cruise speed for the aircraft as possible"
+            },
+            {
+              "answer": "Immediately reduce speed by reducing thrust, deploy stage 1 flap and fly at the Vf speed"
+            },
+            {
+              "answer": "Immediately reduce speed by reducing thrust and fly at the manoeuvring speed",
+              "correct": true
+            }
+          ]
+        },
+        {
+          "number": "2",
+          "question": "What does the term CB stand for on a GAF?",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Cumulonimbus", "correct": true },
+            { "answer": "Cirronimbus" },
+            { "answer": "Cumulostratus" },
+            { "answer": "Cirrostratus" }
+          ]
+        },
+        {
+          "number": "3",
+          "question": "The main difference between fog and cloud is",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "The height which they occur", "correct": true },
+            { "answer": "Cloud is thicker and wetter than fog" },
+            { "answer": "Fog is thicker and wetter than cloud" },
+            { "answer": "Clouds have much colder air than fog" }
+          ]
+        },
+        {
+          "number": "4",
+          "question": "When warm moist air moves across very cold ground and forms fog, it is called",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Conduction fog" },
+            { "answer": "Advection fog", "correct": true },
+            { "answer": "Convection fog" },
+            { "answer": "Radiation fog" }
+          ]
+        },
+        {
+          "number": "5",
+          "question": "On a synoptic chart, high winds are indicated by",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Isobars a long way apart" },
+            { "answer": "Dotted lines" },
+            { "answer": "Lots of isobars close together", "correct": true },
+            { "answer": "A line with semi circles on it" }
+          ]
+        },
+        {
+          "number": "6",
+          "question": "What speed do you fly in severe turbulence?",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Va - manoeuvring speed", "correct": true },
+            { "answer": "Vno - cruising speed" },
+            { "answer": "Vfe - Flap extension speed" },
+            { "answer": "Vne - never exceed speed" }
+          ]
+        },
+        {
+          "number": "7",
+          "question": "If approaching class D airspace at a low altitude due to low cloud or visibility",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "ATC may request special VFR" },
+            { "answer": "ATC will instruct special VFR" },
+            { "answer": "No special considerations" },
+            {
+              "answer": "A pilot should request special VFR",
+              "correct": true
+            }
+          ]
+        },
+        {
+          "number": "8",
+          "question": "What is the main difference between fog and mist",
+          "source": "RPL MET Quiz",
+          "answers": [
+            {
+              "answer": "Mist has visibility less than 1000m and fog has visibility more than 1000m"
+            },
+            {
+              "answer": "Fog has visibility less than 1000m and fog has visibility more than 1000m"
+            },
+            {
+              "answer": "Fog has visibility less than 1000 ft and mist has visibility more than 1000ft",
+              "correct": true
+            },
+            {
+              "answer": "Mist has visibility less than 1000 ft and mist has visibility more than 1000ft"
+            }
+          ]
+        },
+        {
+          "number": "9",
+          "question": "In haze, everything would appear",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Closer than it is" },
+            { "answer": "Darker that it is" },
+            { "answer": "Further away than what it is", "correct": true },
+            { "answer": "Lighter than what it is" }
+          ]
+        },
+
+        {
+          "number": "10",
+          "question": "What is the minimum visibility for VMC in Class G airspace below 10,000 ft",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "75000 ft" },
+            { "answer": "10 km" },
+            {
+              "answer": "5000m",
+              "correct": true,
+              "reference": {
+                "url": "https://www.casa.gov.au/australian-airspace-structure"
+              }
+            },
+            { "answer": "5000ft" }
+          ]
+        },
+        {
+          "number": "11",
+          "question": "Which type of cloud would you associate with poor visibility, stable air and drizzly rain?",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Stratus", "correct": true },
+            { "answer": "Cirrus" },
+            { "answer": "Cumulus" },
+            { "answer": "Nimbostratus" }
+          ]
+        },
+        {
+          "number": "12",
+          "question": "BECMG on a TAF indicates",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Insignificant change" },
+            { "answer": "Major change" },
+            { "answer": "Significant change", "correct": true },
+            { "answer": "A major and rapid change" }
+          ]
+        },
+        {
+          "number": "13",
+          "question": "On a GAF could height refers to",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "AGL" },
+            {
+              "answer": "AMSL",
+              "correct": true,
+              "postExplanation": "Above Mean Sea Level"
+            },
+            { "answer": "Density height" },
+            { "answer": "Pressure height" }
+          ]
+        },
+        {
+          "number": "14",
+          "question": "How often are new GAFs issued",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "12 hours" },
+            { "answer": "3 hours" },
+            { "answer": "2 hours" },
+            {
+              "answer": "6 hours",
+              "correct": true,
+              "reference": {
+                "url": "http://www.bom.gov.au/aviation/data/education/gaf.pdf "
+              }
+            }
+          ]
+        },
+        {
+          "number": "15",
+          "question": "What does the term DZ mean?",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Drizzle", "correct": true },
+            { "answer": "Dust" },
+            { "answer": "Drafts" },
+            { "answer": "Draught" }
+          ]
+        },
+        {
+          "number": "16",
+          "question": "What could indicate most severe turbulence",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "SC" },
+            { "answer": "CC" },
+            {
+              "answer": "CB and TCU",
+              "reference": {
+                "url": "http://www.bom.gov.au/aviation/data/education/GAF-reference-card.pdf"
+              }
+            },
+            { "answer": "Nil cloud conditions" }
+          ]
+        },
+        {
+          "number": "17",
+          "question": "An example of slant visibility with regard to fog would be",
+          "source": "RPL MET Quiz",
+          "answers": [
+            {
+              "answer": "Flying overhead, the runway appears closer than on final approach"
+            },
+            {
+              "answer": "Flying overhead the runway appears closer than on final approach"
+            },
+            {
+              "answer": "Flying overhead, the runway appears clearer than on final approach",
+              "correct": true
+            }
+          ]
+        },
+        {
+          "number": "18",
+          "question": "Low level windshear is",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "When the air changes direction" },
+            { "answer": "When the airspeed suddenly changes" },
+            {
+              "answer": "When the airspeed and direction change",
+              "correct": true
+            },
+            { "answer": "None of the above" }
+          ]
+        },
+
+        {
+          "number": "19",
+          "question": "What is a tempo",
+          "source": "RPL MET Quiz",
+          "answers": [
+            {
+              "answer": "Change in conditions last for a period longer than 30 mins but less than 60 mins",
+              "correct": true,
+              "reference": {
+                "url": "http://www.bom.gov.au/aviation/data/education/awp-taf.pdf"
+              }
+            },
+            {
+              "answer": "Change in conditions lasting for a period of up to 30 mins"
+            },
+            {
+              "answer": "Change in condition lasting for a period more than 60 minutes"
+            },
+            { "answer": "No change in conditions" }
+          ]
+        },
+        {
+          "number": "20",
+          "question": "How often are TAF3 issued?",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "4 hourly" },
+            {
+              "answer": "3 hourly",
+              "correct": true,
+              "reference": {
+                "url": "http://www.bom.gov.au/aviation/taf3/TAF3-Brochure.pdf"
+              }
+            },
+            { "answer": "6 hourly" },
+            { "answer": "12 hourly" }
+          ]
+        },
+        {
+          "number": "21",
+          "question": "The wind direction in a METAR, SPECI, TAF, TAF3 and GAF is in",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Meters/second M°" },
+            { "answer": "Meters/second T°" },
+            { "answer": "Kt M°" },
+            {
+              "answer": "Kt T°",
+              "correct": true,
+              "rationale": "All written wind directions in knots true",
+              "reference": {
+                "url": "http://www.bom.gov.au/aviation/data/education/metar-speci.pdf"
+              }
+            }
+          ]
+        },
+        {
+          "number": "22",
+          "question": "The GAF says BKN SC 3000/5500, what does this mean?",
+          "source": "RPL MET Quiz",
+          "answers": [
+            {
+              "answer": "Cloud 3-4 OKTAS with stratocumulus cloud base at 3000 and tops at 5500 AMSL"
+            },
+            {
+              "answer": "Cloud 5-7 OKTAS with stratocumulus cloud base at 3000 and tops at 5500 AMSL",
+              "correct": true,
+              "reference": {
+                "url": "http://www.bom.gov.au/aviation/data/education/gaf.pdf"
+              }
+            },
+            {
+              "answer": "Cloud 3-4 OKTAS with stratocumulus cloud base at 3000 and tops at 5500 AGL"
+            },
+            {
+              "answer": "Cloud 5-7 OKTAS with stratocumulus cloud base at 3000 and tops at 5500 AGL"
+            }
+          ]
+        },
+        {
+          "number": "23",
+          "question": "The most likely cause of turbulence over land on a hot day is",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Mechanical friction" },
+            { "answer": "Wind shear" },
+            {
+              "answer": "Thermal activity",
+              "correct": true,
+              "reference": {
+                "url": "https://www.casa.gov.au/sites/default/files/2024-07/avsafety-turbulence-card.pdf"
+              }
+            },
+            { "answer": "Temperature inversion" }
+          ]
+        },
+        {
+          "number": "24",
+          "question": "During what stage of a thunderstorm would lighting be most frequent?",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Before any rain" },
+            { "answer": "During the most rapid growth stage" },
+            {
+              "answer": "At the mature stage",
+              "correct": true,
+              "rationale": "Developing (towering cumulus) stage, mature (cumulonimbus) stage, dissipating stage.",
+              "reference": {
+                "url": "http://www.bom.gov.au/aviation/data/education/thunderstorms.pdf"
+              }
+            },
+            { "answer": "During the dissipating stage" }
+          ]
+        },
+        {
+          "number": "25",
+          "question": "Lines that connect areas of equal pressure are called on a synoptic chart?",
+          "source": "RPL MET Quiz",
+          "answers": [
+            { "answer": "Isogonal" },
+            {
+              "answer": "Isobars",
+              "correct": true,
+              "reference": {
+                "url": "https://media.bom.gov.au/social/blog/2391/the-art-of-the-chart-how-to-read-a-weather-map/ "
+              }
+            },
+            { "answer": "Pressure lines" },
+            { "answer": "Trough" }
+          ]
+        },
+        {
+          "number": "26",
+          "question": "Which of the following is true?",
+          "source": "RPL MET Quiz",
+          "answers": [
+            {
+              "answer": "Wind moves in a clockwise direction around a low and an anticlockwise direction around a high",
+              "correct": true,
+              "reference": {
+                "url": "https://www.dpi.nsw.gov.au/__data/assets/pdf_file/0017/140129/do-weather-systems-turn-clockwise-or-anticlockwise.pdf"
+              }
+            },
+            {
+              "answer": "Wind moves clockwise around both a low and a high"
+            },
+            {
+              "answer": "Wind moves anticlockwise around both a high and a low"
+            }
+          ]
+        },
+        {
+          "number": "27",
+          "question": "Sea breeze is caused by",
+          "source": "RPL MET Quiz",
+          "answers": [
+            {
+              "answer": "Cold air over land by day sinking and warm air over the sea rising"
+            },
+            {
+              "answer": "Warm air over land by rising and cold air over sea sinking",
+              "correct": true,
+              "reference": [
+                {
+                  "url": "https://en.wikipedia.org/wiki/Sea_breeze"
+                },
+                {
+                  "url": "https://en.wikipedia.org/wiki/Sea_breeze#/media/File:LAKE_BREEZE-en.gif"
+                }
+              ]
+            },
+            { "answer": "Cold air over land and sea sinking" },
+            { "answer": "Warm air over land and sea rising" }
+          ]
+        },
+        {
+          "number": "28",
+          "question": "Flying underneath a thunderstorm is hazardous because",
+          "source": "RPL MET Quiz",
+          "answers": []
+        }
+      ]
+    }
+  ]
+}

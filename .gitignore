@@ -43,3 +43,5 @@ android/
 ios/
 *.backup
 questions.json
+
+.env
