@@ -12,6 +12,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import AnswerOption from "./AnswerOption";
 import Button from "./Button";
+import FreeTextInput from "./FreeTextInput";
 import QuestionResult from "./QuestionResult";
 import ReferenceLikeOutput from "./ReferenceLikeOutput";
 import { ThemedText } from "./ThemedText";
@@ -33,7 +34,7 @@ const HintButton = ({ hint }: { hint: string }) => {
 const QuestionInput = ({ question }: { question: Question }) => {
   const questionIdx = useAppSelector(selectCurrentQuestionIdx)!;
   const answerIdsByQuestionIdx = useAppSelector(selectAnswerIdsByQuestionIdx)!;
-  const selectedAnswerIndexes = useAppSelector(
+  const finalAnswersByQuestionIdx = useAppSelector(
     selectFinalAnswersByQuestionIdx
   )!;
 
@@ -48,7 +49,8 @@ const QuestionInput = ({ question }: { question: Question }) => {
     );
   });
 
-  const hasAnswered = selectedAnswerIndexes[questionIdx] !== null;
+  const finalAnswer = finalAnswersByQuestionIdx[questionIdx];
+  const hasAnswered = finalAnswer !== null;
 
   return (
     <>
@@ -73,15 +75,19 @@ const QuestionInput = ({ question }: { question: Question }) => {
           />
         </>
       ) : null}
-      <View style={{ flexDirection: "column", justifyContent: "flex-start" }}>
-        {randomAnswers.map((answer) => (
-          <AnswerOption
-            key={getIdForAnswer(answer)}
-            questionIdx={questionIdx}
-            answer={answer}
-          />
-        ))}
-      </View>
+      {options.freeTextMode ? (
+        <FreeTextInput questionIdx={questionIdx} />
+      ) : (
+        <View style={{ flexDirection: "column", justifyContent: "flex-start" }}>
+          {randomAnswers.map((answer) => (
+            <AnswerOption
+              key={getIdForAnswer(answer)}
+              questionIdx={questionIdx}
+              answer={answer}
+            />
+          ))}
+        </View>
+      )}
       {options.allowHints && question.hint ? (
         <>
           <View

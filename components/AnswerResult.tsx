@@ -13,10 +13,12 @@ const AnswerResult = ({
   answer,
   questionIdx,
   correctAnswer,
+  forceSelected = false,
 }: {
   answer: Answer;
   questionIdx: number;
   correctAnswer: Answer;
+  forceSelected?: boolean;
 }) => {
   const finalAnswersByQuestionIdx = useAppSelector(
     selectFinalAnswersByQuestionIdx
@@ -39,8 +41,13 @@ const AnswerResult = ({
   const answerIdx = answerIdsForQuestion.findIndex(
     (answerId) => answerId === answer.internalId
   )!;
+
+  const finalAnswer = finalAnswersByQuestionIdx[questionIdx];
   const wasSelected =
-    finalAnswersByQuestionIdx[questionIdx]?.answerId === answer.internalId;
+    (finalAnswer &&
+      "answerId" in finalAnswer &&
+      finalAnswer.answerId === answer.internalId) ||
+    forceSelected;
 
   if (wasSelected) {
     console.debug("AnswerResult.wasSelected", {

@@ -4,6 +4,7 @@ import {
 } from "@/features/quiz/quizSlice";
 import { useAppSelector } from "@/hooks/state";
 import useQuestion from "@/hooks/useQuestion";
+import useQuizOptions from "@/hooks/useQuizOptions";
 import { Answer } from "@/types";
 import { getIdForQuestion } from "@/utils";
 import { View } from "react-native";
@@ -20,6 +21,7 @@ const QuestionResult = ({
   const question = useQuestion(questionId);
   const answerIdsByQuestionIdx = useAppSelector(selectAnswerIdsByQuestionIdx);
   const questionIds = useAppSelector(selectQuestionIds);
+  const options = useQuizOptions();
 
   if (!question) {
     return <ThemedText>No question</ThemedText>;
@@ -70,14 +72,23 @@ const QuestionResult = ({
           justifyContent: "flex-start",
         }}
       >
-        {randomAnswers.map((answer) => (
+        {options.freeTextMode ? (
           <AnswerResult
-            key={answer.internalId}
-            answer={answer}
+            forceSelected
+            answer={correctAnswer}
             correctAnswer={correctAnswer}
             questionIdx={questionIdx}
           />
-        ))}
+        ) : (
+          randomAnswers.map((answer) => (
+            <AnswerResult
+              key={answer.internalId}
+              answer={answer}
+              correctAnswer={correctAnswer}
+              questionIdx={questionIdx}
+            />
+          ))
+        )}
       </View>
       <View
         style={{

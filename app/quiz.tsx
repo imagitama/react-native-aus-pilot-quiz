@@ -289,6 +289,23 @@ const ConfigureQuizView = () => {
           borderBottomWidth: 25,
         }}
       />
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Checkbox
+          status={options.freeTextMode ? "checked" : "unchecked"}
+          onPress={() => updateOption("freeTextMode", !options.freeTextMode)}
+        />
+        <ThemedText
+          onPress={() => updateOption("freeTextMode", !options.freeTextMode)}
+        >
+          Type in answers instead
+        </ThemedText>
+      </View>
+      <View
+        style={{
+          borderBottomColor: "white",
+          borderBottomWidth: 25,
+        }}
+      />
       <ThemedText>Number of Questions (default 10):</ThemedText>
       <Slider
         value={options.questionLimit}

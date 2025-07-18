@@ -13,6 +13,7 @@ export interface Options {
   questionLimit: number;
   immediatelyShowResult: boolean;
   allowHints: boolean;
+  freeTextMode: boolean;
 }
 
 const defaultOptions: Options = {
@@ -21,6 +22,7 @@ const defaultOptions: Options = {
   questionLimit: 0,
   immediatelyShowResult: false,
   allowHints: true,
+  freeTextMode: false,
 };
 
 export interface QuizState {
@@ -34,7 +36,7 @@ export interface QuizState {
   questionIds: string[] | null;
   currentQuestionIdx: number | null;
   answerIdsByQuestionIdx: string[][] | null;
-  finalAnswersByQuestionIdx: (FinalAnswer | null)[] | null; // depends on random answers
+  finalAnswersByQuestionIdx: (FinalAnswer | null)[] | null;
   options: Options;
 }
 
@@ -225,7 +227,9 @@ export const quizSlice = createSlice({
       state.finalAnswersByQuestionIdx = state.finalAnswersByQuestionIdx.map(
         (finalAnswer, questionIdx) =>
           questionIdx === currentQuestionIdx
-            ? finalAnswer && finalAnswer.answerId === answerIdToToggle
+            ? finalAnswer &&
+              "answerId" in finalAnswer &&
+              finalAnswer.answerId === answerIdToToggle
               ? null
               : {
                   answerId: answerIdToToggle,
@@ -268,6 +272,22 @@ export const quizSlice = createSlice({
     agreeToToS: (state) => {
       state.hasAgreedToToS = true;
     },
+    setFinalAnswer: (
+      state,
+      action: PayloadAction<[number, FinalAnswer | null]>
+    ) => {
+      const [questionIdx, newFinalAnswer] = action.payload;
+
+      if (!state.finalAnswersByQuestionIdx) {
+        throw new Error(
+          "Cannot set final answer without something to store into"
+        );
+      }
+
+      console.debug(`setFinalAnswer`, { questionIdx, newFinalAnswer });
+
+      state.finalAnswersByQuestionIdx[questionIdx] = newFinalAnswer;
+    },
   },
 });
 
@@ -285,6 +305,7 @@ export const {
   clear: clearAction,
   setIsLoadingQuestionData: setIsLoadingQuestionDataAction,
   agreeToToS: agreeToToSAction,
+  setFinalAnswer: setFinalAnswerAction,
 } = quizSlice.actions;
 
 export const selectQuestionData = (state: RootState) => state.quiz.questionData;

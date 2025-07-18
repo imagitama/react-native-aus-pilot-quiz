@@ -48,6 +48,12 @@ export interface UrlDescriptor {
   url: string;
 }
 
-export interface FinalAnswer {
+export interface FinalAnswerAnswer {
   answerId: string;
 }
+
+export interface FinalTextAnswer {
+  text: string;
+}
+
+export type FinalAnswer = FinalTextAnswer | FinalAnswerAnswer;
