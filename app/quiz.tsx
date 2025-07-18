@@ -306,6 +306,33 @@ const ConfigureQuizView = () => {
           borderBottomWidth: 25,
         }}
       />
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Checkbox
+          status={options.autoNextQuestionOnAnswer ? "checked" : "unchecked"}
+          onPress={() =>
+            updateOption(
+              "autoNextQuestionOnAnswer",
+              !options.autoNextQuestionOnAnswer
+            )
+          }
+        />
+        <ThemedText
+          onPress={() =>
+            updateOption(
+              "autoNextQuestionOnAnswer",
+              !options.autoNextQuestionOnAnswer
+            )
+          }
+        >
+          Automatically go to next question on answer
+        </ThemedText>
+      </View>
+      <View
+        style={{
+          borderBottomColor: "white",
+          borderBottomWidth: 25,
+        }}
+      />
       <ThemedText>Number of Questions (default 10):</ThemedText>
       <Slider
         value={options.questionLimit}

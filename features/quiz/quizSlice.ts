@@ -14,6 +14,7 @@ export interface Options {
   immediatelyShowResult: boolean;
   allowHints: boolean;
   freeTextMode: boolean;
+  autoNextQuestionOnAnswer: boolean;
 }
 
 const defaultOptions: Options = {
@@ -23,6 +24,7 @@ const defaultOptions: Options = {
   immediatelyShowResult: false,
   allowHints: true,
   freeTextMode: false,
+  autoNextQuestionOnAnswer: false,
 };
 
 export interface QuizState {
@@ -53,6 +55,49 @@ const initialState: QuizState = {
   answerIdsByQuestionIdx: null,
   finalAnswersByQuestionIdx: null,
   options: defaultOptions,
+};
+
+const nextQuestion = (state: QuizState) => {
+  if (!state.questionIds) {
+    throw new Error("Cannot go to next question without question IDs");
+  }
+  const currentIdx = state.currentQuestionIdx;
+
+  if (currentIdx === null) {
+    throw new Error("Cannot go to next question without a current idx");
+  }
+
+  if (!state.finalAnswersByQuestionIdx) {
+    throw new Error("Cannot go to next question with empty answers");
+  }
+
+  const nextIdx = currentIdx + 1;
+
+  console.debug("nextQuestion", {
+    indexes: state.finalAnswersByQuestionIdx,
+    nextIdx,
+  });
+
+  if (nextIdx === state.questionIds.length) {
+    console.debug(
+      `ending quiz because next index (${nextIdx}) equals total (${state.questionIds.length})`
+    );
+
+    if (
+      state.finalAnswersByQuestionIdx.find(
+        (selectedAnswer) => selectedAnswer === null
+      ) !== undefined
+    ) {
+      // TODO: output to user as can easily forget
+      console.warn("cannot end as at least one question has no answer");
+      return;
+    }
+
+    state.currentAppState = AppState.Ended;
+    return;
+  }
+
+  state.currentQuestionIdx = nextIdx;
 };
 
 const startQuiz = (state: QuizState) => {
@@ -145,46 +190,7 @@ export const quizSlice = createSlice({
       state.selectedAreaId = areaId;
     },
     nextQuestion: (state) => {
-      if (!state.questionIds) {
-        throw new Error("Cannot go to next question without question IDs");
-      }
-      const currentIdx = state.currentQuestionIdx;
-
-      if (currentIdx === null) {
-        throw new Error("Cannot go to next question without a current idx");
-      }
-
-      if (!state.finalAnswersByQuestionIdx) {
-        throw new Error("Cannot go to next question with empty answers");
-      }
-
-      const nextIdx = currentIdx + 1;
-
-      console.debug("nextQuestion", {
-        indexes: state.finalAnswersByQuestionIdx,
-        nextIdx,
-      });
-
-      if (nextIdx === state.questionIds.length) {
-        console.debug(
-          `ending quiz because next index (${nextIdx}) equals total (${state.questionIds.length})`
-        );
-
-        if (
-          state.finalAnswersByQuestionIdx.find(
-            (selectedAnswer) => selectedAnswer === null
-          ) !== undefined
-        ) {
-          // TODO: output to user as can easily forget
-          console.warn("cannot end as at least one question has no answer");
-          return;
-        }
-
-        state.currentAppState = AppState.Ended;
-        return;
-      }
-
-      state.currentQuestionIdx = nextIdx;
+      nextQuestion(state);
     },
     prevQuestion: (state) => {
       if (!state.questionIds) {
@@ -236,6 +242,10 @@ export const quizSlice = createSlice({
                 }
             : finalAnswer
       );
+
+      if (state.options.autoNextQuestionOnAnswer) {
+        nextQuestion(state);
+      }
     },
     startQuiz: (state, action: PayloadAction<Area>) => {
       console.log("startQuiz");
