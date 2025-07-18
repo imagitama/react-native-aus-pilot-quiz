@@ -202,10 +202,15 @@ export const quizSlice = createSlice({
 
       const allQuestions = collectQuestions(node);
 
-      state.options.questionLimit =
-        allQuestions.length > 10 ? 10 : allQuestions.length;
+      const questionLimit = allQuestions.length > 10 ? 10 : allQuestions.length;
 
+      state.options.questionLimit;
       state.selectedNodeId = nodeId;
+
+      console.log("selectNode", {
+        nodeId,
+        questionLimit,
+      });
     },
 
     nextQuestion: (state) => {
@@ -307,7 +312,7 @@ export const quizSlice = createSlice({
       state.answerIdsByQuestionIdx = null;
       state.finalAnswersByQuestionIdx = null;
 
-      state.currentAppState = AppState.SelectNode;
+      state.currentAppState = AppState.MainMenu;
     },
     setOptions: (state, action: PayloadAction<Options>) => {
       const newOptions = action.payload;
@@ -335,7 +340,7 @@ export const quizSlice = createSlice({
         );
       }
 
-      console.debug(`setFinalAnswer`, { questionIdx, newFinalAnswer });
+      console.log(`setFinalAnswer`, { questionIdx, newFinalAnswer });
 
       state.finalAnswersByQuestionIdx[questionIdx] = newFinalAnswer;
     },

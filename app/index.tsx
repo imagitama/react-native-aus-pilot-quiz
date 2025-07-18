@@ -15,7 +15,7 @@ export default function MainMenu() {
   const clear = () => dispatch(clearAction());
   const goToSelectNode = () => dispatch(goToSelectNodeAction());
   const downloadExampleQuestions = () =>
-    downloadFile("/questions/questions-example.json");
+    downloadFile("/questions/empty-questions.json");
   const downloadReadme = () => downloadFile("/questions/README.md");
 
   return (

@@ -62,6 +62,10 @@ const SelectNodeSubView = () => {
     configureQuiz();
   };
 
+  const questionCount = selectedNode
+    ? collectQuestions(selectedNode).length
+    : 0;
+
   return (
     <>
       <ThemedText type="title">Choose your questions</ThemedText>
@@ -70,19 +74,26 @@ const SelectNodeSubView = () => {
           <View
             style={{ borderBottomColor: "transparent", borderBottomWidth: 25 }}
           />
-          <ThemedText type="subtitle">Chosen: {selectedNode.name}</ThemedText>
+          <ThemedText type="subtitle">
+            Chosen: {selectedNode.name} ({questionCount})
+          </ThemedText>
           <View
             style={{ borderBottomColor: "transparent", borderBottomWidth: 25 }}
           />
-          <Button title="Start Quiz" onPress={onPressSelect} />
+          <Button
+            title={`Continue with ${selectedNode.name}`}
+            onPress={onPressSelect}
+          />
         </>
       ) : null}
       <View
         style={{ borderBottomColor: "transparent", borderBottomWidth: 25 }}
       />
 
-      {(selectedNode && selectedNode.children
+      {(selectedNode
         ? selectedNode.children
+          ? selectedNode.children
+          : []
         : questionData.children
       ).map((node) => (
         <NodeItem key={node.internalId} node={node} />
@@ -395,7 +406,11 @@ const QuizInProgressSubView = () => {
 const QuizEndedSubView = () => {
   const dispatch = useAppDispatch();
   const [selectedNode] = useSelectedNode();
-  const quitQuiz = () => dispatch(quitQuizAction());
+  const { push } = useRouter();
+  const quitQuiz = () => {
+    dispatch(quitQuizAction());
+    push("/");
+  };
   const restartQuiz = () => dispatch(restartQuizAction());
   const questionIds = useAppSelector(selectQuestionIds);
   const quizState = useAppSelector((state) => state.quiz);
