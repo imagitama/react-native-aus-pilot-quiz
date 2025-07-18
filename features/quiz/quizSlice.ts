@@ -282,6 +282,21 @@ export const quizSlice = createSlice({
       console.log("restartQuiz");
       startQuiz(state);
     },
+    resetOptions: (state) => {
+      console.log("resetOptions");
+
+      const selectedNode = state.selectedNodeId
+        ? findNodeById(state.questionData?.children || [], state.selectedNodeId)
+        : null;
+      const questionLimit = selectedNode
+        ? collectQuestions(selectedNode).length
+        : defaultOptions.questionLimit;
+
+      state.options = {
+        ...defaultOptions,
+        questionLimit,
+      };
+    },
     quitQuiz: (state) => {
       console.log("quitQuiz");
 
@@ -343,6 +358,7 @@ export const {
   setIsLoadingQuestionData: setIsLoadingQuestionDataAction,
   agreeToToS: agreeToToSAction,
   setFinalAnswer: setFinalAnswerAction,
+  resetOptions: resetOptionsAction,
 } = quizSlice.actions;
 
 export const selectQuestionData = (state: RootState) => state.quiz.questionData;

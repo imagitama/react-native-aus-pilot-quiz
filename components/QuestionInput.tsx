@@ -13,6 +13,7 @@ import { View } from "react-native";
 import AnswerOption from "./AnswerOption";
 import Button from "./Button";
 import FreeTextInput from "./FreeTextInput";
+import Gap from "./Gap";
 import QuestionResult from "./QuestionResult";
 import ReferenceLikeOutput from "./ReferenceLikeOutput";
 import { ThemedText } from "./ThemedText";
@@ -58,21 +59,11 @@ const QuestionInput = ({ question }: { question: Question }) => {
         {questionIdx + 1}: &nbsp;&nbsp;&nbsp;
         {question.question}
       </ThemedText>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 50,
-        }}
-      />
+      <Gap />
       {question.imageName ? (
         <>
           <Image />
-          <View
-            style={{
-              borderBottomColor: "white",
-              borderBottomWidth: 50,
-            }}
-          />
+          <Gap />
         </>
       ) : null}
       {options.freeTextMode ? (
@@ -90,30 +81,15 @@ const QuestionInput = ({ question }: { question: Question }) => {
       )}
       {options.allowHints && question.hint ? (
         <>
-          <View
-            style={{
-              borderBottomColor: "white",
-              borderBottomWidth: 25,
-            }}
-          />
+          <Gap small />
           <HintButton hint={question.hint} />
         </>
       ) : null}
       {options.immediatelyShowResult && hasAnswered ? (
         <>
-          <View
-            style={{
-              borderBottomColor: "white",
-              borderBottomWidth: 50,
-            }}
-          />
+          <Gap />
           <ThemedText type="subtitle">Actual Result</ThemedText>
-          <View
-            style={{
-              borderBottomColor: "white",
-              borderBottomWidth: 25,
-            }}
-          />
+          <Gap small />
           <QuestionResult
             questionId={getIdForQuestion(question)}
             showQuestionText={false}
@@ -122,12 +98,7 @@ const QuestionInput = ({ question }: { question: Question }) => {
       ) : null}
       {question.source ? (
         <>
-          <View
-            style={{
-              borderBottomColor: "white",
-              borderBottomWidth: 50,
-            }}
-          />
+          <Gap />
           <ThemedText>
             Source: <ReferenceLikeOutput referenceLike={question.source} />
           </ThemedText>

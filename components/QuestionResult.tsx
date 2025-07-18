@@ -9,6 +9,7 @@ import { Answer } from "@/types";
 import { getIdForQuestion } from "@/utils";
 import { View } from "react-native";
 import AnswerResult from "./AnswerResult";
+import Gap from "./Gap";
 import { ThemedText } from "./ThemedText";
 
 const QuestionResult = ({
@@ -60,12 +61,7 @@ const QuestionResult = ({
           {questionIdx + 1}: {question.question}
         </ThemedText>
       ) : null}
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 5,
-        }}
-      />
+      <Gap small />
       <View
         style={{
           flexDirection: "column",
@@ -90,12 +86,6 @@ const QuestionResult = ({
           ))
         )}
       </View>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 25,
-        }}
-      />
     </>
   );
 };

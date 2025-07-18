@@ -1,10 +1,11 @@
 import Slider from "@react-native-community/slider";
 import { Stack, useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { Checkbox } from "react-native-paper";
 
 import alert from "@/alert";
 import Button from "@/components/Button";
+import Gap from "@/components/Gap";
 import QuestionInput from "@/components/QuestionInput";
 import QuestionResult from "@/components/QuestionResult";
 import { ThemedText } from "@/components/ThemedText";
@@ -15,6 +16,7 @@ import {
   nextQuestionAction,
   prevQuestionAction,
   quitQuizAction,
+  resetOptionsAction,
   restartQuizAction,
   selectAnswerIdsByQuestionIdx,
   selectAppState,
@@ -32,6 +34,7 @@ import useQuestionData from "@/hooks/useQuestionData";
 import useSelectedNode from "@/hooks/useSelectedNode";
 import { AppState, LevelNode } from "@/types";
 import { collectQuestions, tallyCorrectAnswers } from "@/utils";
+import { Fragment } from "react";
 
 const SelectNodeSubView = () => {
   const [questionData] = useQuestionData();
@@ -64,13 +67,19 @@ const SelectNodeSubView = () => {
       <ThemedText type="title">Choose your questions</ThemedText>
       {selectedNode ? (
         <>
-          <View style={{ borderBottomColor: "white", borderBottomWidth: 25 }} />
+          <View
+            style={{ borderBottomColor: "transparent", borderBottomWidth: 25 }}
+          />
           <ThemedText type="subtitle">Chosen: {selectedNode.name}</ThemedText>
-          <View style={{ borderBottomColor: "white", borderBottomWidth: 25 }} />
+          <View
+            style={{ borderBottomColor: "transparent", borderBottomWidth: 25 }}
+          />
           <Button title="Start Quiz" onPress={onPressSelect} />
         </>
       ) : null}
-      <View style={{ borderBottomColor: "white", borderBottomWidth: 25 }} />
+      <View
+        style={{ borderBottomColor: "transparent", borderBottomWidth: 25 }}
+      />
 
       {(selectedNode && selectedNode.children
         ? selectedNode.children
@@ -79,7 +88,9 @@ const SelectNodeSubView = () => {
         <NodeItem key={node.internalId} node={node} />
       ))}
 
-      <View style={{ borderBottomColor: "white", borderBottomWidth: 100 }} />
+      <View
+        style={{ borderBottomColor: "transparent", borderBottomWidth: 100 }}
+      />
       <EndQuizButton />
     </>
   );
@@ -113,7 +124,7 @@ const Content = () => {
           <QuizInProgressSubView />
           <View
             style={{
-              borderBottomColor: "white",
+              borderBottomColor: "transparent",
               borderBottomWidth: 100,
             }}
           />
@@ -155,6 +166,7 @@ const ConfigureSubView = () => {
   const options = useAppSelector(selectOptions);
   const updateOptions = (newOptions: Options) =>
     dispatch(setOptionsAction(newOptions));
+  const resetOptions = () => dispatch(resetOptionsAction());
   const [selectedNode] = useSelectedNode();
 
   if (!selectedNode) {
@@ -178,12 +190,7 @@ const ConfigureSubView = () => {
   return (
     <>
       <ThemedText type="title">Options</ThemedText>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 25,
-        }}
-      />
+      <Gap small />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Checkbox
           status={options.randomizeQuestions ? "checked" : "unchecked"}
@@ -199,12 +206,7 @@ const ConfigureSubView = () => {
           Randomise questions (recommended)
         </ThemedText>
       </View>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 25,
-        }}
-      />
+      <Gap small />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Checkbox
           status={options.randomizeAnswers ? "checked" : "unchecked"}
@@ -220,12 +222,7 @@ const ConfigureSubView = () => {
           Randomise answers (recommended)
         </ThemedText>
       </View>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 25,
-        }}
-      />
+      <Gap small />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Checkbox
           status={options.immediatelyShowResult ? "checked" : "unchecked"}
@@ -247,12 +244,7 @@ const ConfigureSubView = () => {
           Immediately show answers
         </ThemedText>
       </View>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 25,
-        }}
-      />
+      <Gap small />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Checkbox
           status={options.allowHints ? "checked" : "unchecked"}
@@ -264,12 +256,7 @@ const ConfigureSubView = () => {
           Allow hints
         </ThemedText>
       </View>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 25,
-        }}
-      />
+      <Gap small />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Checkbox
           status={options.freeTextMode ? "checked" : "unchecked"}
@@ -281,12 +268,7 @@ const ConfigureSubView = () => {
           Type in answers instead
         </ThemedText>
       </View>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 25,
-        }}
-      />
+      <Gap small />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Checkbox
           status={options.autoNextQuestionOnAnswer ? "checked" : "unchecked"}
@@ -308,12 +290,7 @@ const ConfigureSubView = () => {
           Automatically go to next question on answer
         </ThemedText>
       </View>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 25,
-        }}
-      />
+      <Gap small />
       <ThemedText>Number of Questions (default 10):</ThemedText>
       <Slider
         value={options.questionLimit}
@@ -344,19 +321,10 @@ const ConfigureSubView = () => {
         onPress={() => updateOption("questionLimit", questions.length)}
         type="ghost"
       />
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 25,
-        }}
-      />
+      <Gap />
       <Button title="Start Quiz" onPress={startQuiz} />
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 5,
-        }}
-      />
+      <Button title="Reset Options" onPress={resetOptions} type="ghost" />
+      <Gap />
       <EndQuizButton />
     </>
   );
@@ -407,12 +375,7 @@ const QuizInProgressSubView = () => {
   return (
     <>
       <QuestionInput question={question} />
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 50,
-        }}
-      />
+      <Gap />
       <View style={{ flexDirection: "row" }}>
         <Button
           title="Back"
@@ -483,37 +446,22 @@ const QuizEndedSubView = () => {
   return (
     <>
       <ThemedText type="title">Quiz Complete</ThemedText>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 50,
-        }}
-      />
+      <Gap />
       <ThemedText type="subtitle">
         You scored {correctCount} out of {questionIds.length}
       </ThemedText>
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 50,
-        }}
-      />
-      {questionIds.map((questionId) => (
-        <QuestionResult key={questionId} questionId={questionId} />
-      ))}
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 75,
-        }}
-      />
+      <Gap />
+      <ScrollView style={{ flex: 1, backgroundColor: "transparent" }}>
+        {questionIds.map((questionId, idx) => (
+          <Fragment key={questionId}>
+            {idx !== 0 ? <Gap small /> : null}
+            <QuestionResult questionId={questionId} />
+          </Fragment>
+        ))}
+      </ScrollView>
+      <Gap large />
       <Button title="Restart Quiz" onPress={confirmRestart} />
-      <View
-        style={{
-          borderBottomColor: "white",
-          borderBottomWidth: 50,
-        }}
-      />
+      <Gap />
       <Button title="Main Menu" onPress={confirmQuit} />
     </>
   );
