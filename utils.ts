@@ -74,18 +74,40 @@ export function tallyCorrectAnswers(
       continue; // skip unanswered or invalid questions
     }
 
-    const explicitCorrectAnswer = question.answers.find(
-      (answer) => answer.correct
-    );
-    const correctAnswerId = explicitCorrectAnswer
-      ? explicitCorrectAnswer.internalId
-      : question.answers[0].internalId;
-    const finalAnswerId = shuffledAnswerIds.find(
-      (id) => "answerId" in finalAnswer && id === finalAnswer.answerId
+    const isDragAndDrop = question.answers.some(
+      (answer) => answer.correctIndex !== undefined
     );
 
-    if (finalAnswerId === correctAnswerId) {
-      tally++;
+    if (isDragAndDrop) {
+      // Sort correct answers by correctIndex
+      const correctOrder = question.answers
+        .filter((a) => a.correctIndex !== undefined)
+        .sort((a, b) => a.correctIndex! - b.correctIndex!)
+        .map((a) => a.internalId);
+
+      const userOrder = "answerIds" in finalAnswer ? finalAnswer.answerIds : [];
+
+      // Check if user order matches the correct order exactly
+      const isCorrect =
+        userOrder.length === correctOrder.length &&
+        userOrder.every((id, idx) => id === correctOrder[idx]);
+
+      if (isCorrect) tally++;
+    } else {
+      // Normal single-answer logic
+      const explicitCorrectAnswer = question.answers.find(
+        (answer) => answer.correct
+      );
+      const correctAnswerId = explicitCorrectAnswer
+        ? explicitCorrectAnswer.internalId
+        : question.answers[0].internalId;
+      const finalAnswerId = shuffledAnswerIds.find(
+        (id) => "answerId" in finalAnswer && id === finalAnswer.answerId
+      );
+
+      if (finalAnswerId === correctAnswerId) {
+        tally++;
+      }
     }
   }
 
