@@ -34,9 +34,6 @@ const AnswerResult = ({
 
   const isCorrectAnswer = answer.internalId === correctAnswer.internalId;
 
-  // TODO: Store more complex object to keep track of answers - current system complicated and hard to follow
-  // eg. state.quiz.answerIdsPerQuestionId[questionId] = answerId[]
-
   const answerIdsForQuestion = answersByQuestionIdx[questionIdx];
   const answerIdx = answerIdsForQuestion.findIndex(
     (answerId) => answerId === answer.internalId

@@ -9,6 +9,7 @@ import { Answer } from "@/types";
 import { getIdForQuestion } from "@/utils";
 import { View } from "react-native";
 import AnswerResult from "./AnswerResult";
+import DragAndDropAnswerResult from "./DragAndDropAnswerResult";
 import Gap from "./Gap";
 import { ThemedText } from "./ThemedText";
 
@@ -54,6 +55,10 @@ const QuestionResult = ({
     ? explicitCorrectAnswer
     : question.answers[0];
 
+  const isDragAndDrop = randomAnswers.find(
+    (answer) => answer.correctIndex !== undefined
+  );
+
   return (
     <>
       {showQuestionText ? (
@@ -74,6 +79,11 @@ const QuestionResult = ({
             answer={correctAnswer}
             correctAnswer={correctAnswer}
             questionIdx={questionIdx}
+          />
+        ) : isDragAndDrop ? (
+          <DragAndDropAnswerResult
+            questionIdx={questionIdx}
+            question={question}
           />
         ) : (
           randomAnswers.map((answer) => (

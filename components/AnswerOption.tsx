@@ -24,8 +24,11 @@ const AnswerOption = ({
     throw new Error("Cannot render answer without some indexes");
   }
 
+  const selectedAnswer = selectedAnswerIndexes[questionIdx];
   const isSelected =
-    selectedAnswerIndexes[questionIdx]?.answerId === answer.internalId;
+    selectedAnswer &&
+    "answerId" in selectedAnswer &&
+    selectedAnswer.answerId === answer.internalId;
 
   return (
     <>

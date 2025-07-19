@@ -23,6 +23,33 @@
                   "answer": "It is a solid"
                 }
               ]
+            },
+            {
+              "question": "What are the 4 strokes of the 4 stroke engine?",
+              "answers": [
+                {
+                  "answer": "Intake",
+                  "correctIndex": 0
+                },
+                {
+                  "answer": "Compression",
+                  "correctIndex": 1
+                },
+                {
+                  "answer": "Power",
+                  "correctIndex": 2
+                },
+                {
+                  "answer": "Exhaust",
+                  "correctIndex": 3
+                },
+                {
+                  "answer": "Propulsion"
+                },
+                {
+                  "answer": "Cranking"
+                }
+              ]
             }
           ]
         }

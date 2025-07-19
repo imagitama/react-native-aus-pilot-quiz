@@ -12,6 +12,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import AnswerOption from "./AnswerOption";
 import Button from "./Button";
+import DragAndDropAnswerInput from "./DragAndDropAnswerInput";
 import FreeTextInput from "./FreeTextInput";
 import Gap from "./Gap";
 import QuestionResult from "./QuestionResult";
@@ -38,6 +39,8 @@ const QuestionInput = ({ question }: { question: Question }) => {
   const finalAnswersByQuestionIdx = useAppSelector(
     selectFinalAnswersByQuestionIdx
   )!;
+  const [isDragAndDropResultVisible, setIsDragAndDropResultVisible] =
+    useState(false);
 
   const options = useQuizOptions();
 
@@ -52,6 +55,10 @@ const QuestionInput = ({ question }: { question: Question }) => {
 
   const finalAnswer = finalAnswersByQuestionIdx[questionIdx];
   const hasAnswered = finalAnswer !== null;
+
+  const isDragAndDrop = randomAnswers.find(
+    (answer) => answer.correctIndex !== undefined
+  );
 
   return (
     <>
@@ -68,6 +75,11 @@ const QuestionInput = ({ question }: { question: Question }) => {
       ) : null}
       {options.freeTextMode ? (
         <FreeTextInput questionIdx={questionIdx} />
+      ) : isDragAndDrop ? (
+        <DragAndDropAnswerInput
+          questionIdx={questionIdx}
+          randomAnswers={randomAnswers}
+        />
       ) : (
         <View style={{ flexDirection: "column", justifyContent: "flex-start" }}>
           {randomAnswers.map((answer) => (
@@ -90,10 +102,17 @@ const QuestionInput = ({ question }: { question: Question }) => {
           <Gap />
           <ThemedText type="subtitle">Actual Result</ThemedText>
           <Gap small />
-          <QuestionResult
-            questionId={getIdForQuestion(question)}
-            showQuestionText={false}
-          />
+          {!isDragAndDrop || (isDragAndDrop && isDragAndDropResultVisible) ? (
+            <QuestionResult
+              questionId={getIdForQuestion(question)}
+              showQuestionText={false}
+            />
+          ) : (
+            <Button
+              title="Show Result"
+              onPress={() => setIsDragAndDropResultVisible(true)}
+            />
+          )}
         </>
       ) : null}
       {question.source ? (

@@ -36,6 +36,7 @@ export interface Answer {
   internalId: string; // generated
   answer: string;
   correct?: boolean; // otherwise assume 1st index is correct
+  correctIndex?: number; // for drag and drop
   rationale?: ReferenceLike;
   reference?: ReferenceLike;
 }
@@ -46,12 +47,19 @@ export interface UrlDescriptor {
   url: string;
 }
 
-export interface FinalAnswerAnswer {
+export interface FinalAnswerIdAnswer {
   answerId: string;
+}
+
+export interface FinalAnswerIdsAnswer {
+  answerIds: string[];
 }
 
 export interface FinalTextAnswer {
   text: string;
 }
 
-export type FinalAnswer = FinalTextAnswer | FinalAnswerAnswer;
+export type FinalAnswer =
+  | FinalTextAnswer
+  | FinalAnswerIdAnswer
+  | FinalAnswerIdsAnswer;
